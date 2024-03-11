@@ -1,7 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import * as task from "./task.model";
-import { ClickTaskQuery, FetchTaskQuery } from "./task.schemas";
-import { decodeToken } from "../auth/jwt";
+import { FetchTaskQuery } from "./task.schemas";
 
 export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
   const {
@@ -18,12 +17,12 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
 
   const result = await task.fetch(
     typeof ArrCountry != undefined || ArrCountry ? ArrCountry : null,
-    page_number || null,
+    Number(page_number) || null,
     limit != null ? parseInt(limit.toString()) : limit,
     typeof ArrPlat != undefined || ArrPlat ? ArrPlat : null,
-    featured != null || featured != undefined ? featured : null,
+    featured != null || featured != undefined ? Number(featured) : null,
     network || null,
-    category || null
+    Number(category) || null
   );
 
   if (result != null) {
@@ -74,41 +73,6 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
   } else {
     return reply.status(404).send({
       error: "Not Found",
-    });
-  }
-};
-export const clickInsert = async (req: FastifyRequest, reply: FastifyReply) => {
-  const { platform, network, task_type, campaign_id } =
-    req.query as ClickTaskQuery;
-  const { accessToken } = req.cookies;
-  const locale = req.headers["accept-language"] || ("en" as string);
-  const userAgent = req.headers["user-agent"] as string;
-  const referer = req.headers.referer as string;
-  const countries = req.headers.countries as string;
-  const decoded = await decodeToken(reply, accessToken);
-  console.log(userAgent, referer, countries);
-  const result = await task.clickInsert(
-    decoded.id,
-    platform,
-    network,
-    task_type,
-    network + campaign_id,
-    campaign_id,
-    locale,
-    countries,
-    userAgent,
-    referer
-  );
-  if (result) {
-    return reply.status(201).send({
-      success: 1,
-      message: "Inserted SuccessFull",
-      error: 0,
-      msg: null,
-    });
-  } else {
-    return reply.status(500).send({
-      error: "Error",
     });
   }
 };

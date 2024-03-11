@@ -45,7 +45,7 @@ export const taskItemSchema = z.object({
 export const tasksSchema = z.array(taskItemSchema, taskProviderSchema);
 
 export const fetchTaskResponseSchema = z.object({
-  success: z.string(),
+  success: z.boolean(),
   data: z.object({
     tasks: tasksSchema,
   }),
@@ -54,13 +54,13 @@ export const fetchTaskResponseSchema = z.object({
 });
 
 export const fetchTaskQuerySchema = z.object({
-  countries: z.string().optional(),
-  page_number: z.number().default(1),
-  limit: z.number(),
-  platform: z.string().optional(),
-  featured: z.boolean().default(false),
-  network: z.string().optional(),
-  category: z.number().optional(),
+  countries: z.string().optional().nullable(),
+  page_number: z.string().nullable().default("1"),
+  limit: z.string().nullable().default("20"),
+  platform: z.string().optional().nullable(),
+  featured: z.string().nullable().optional(),
+  network: z.string().optional().nullable(),
+  category: z.string().optional().nullable(),
 });
 export const clickTaskSchema = z.object({
   platform: z.string().max(50),
