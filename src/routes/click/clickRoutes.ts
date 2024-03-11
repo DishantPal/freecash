@@ -1,18 +1,20 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import * as taskController from "./task.controller";
+import * as taskController from "./clicks.controller";
 import { isAuthenticated } from "../../middleware/authMiddleware";
-import { fetchTaskQuerySchema, fetchTaskResponseSchema } from "./task.schemas";
+
 import { ZodTypeProvider } from "fastify-type-provider-zod";
+import { z } from "zod";
+import { clickTaskQuerySchema } from "../task/task.schemas";
 
 export default async function (app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().route({
-    // preHandler: isAuthenticated,
+    preHandler: isAuthenticated,
     method: "GET",
-    url: "/",
+    url: "/insert",
     schema: {
-      querystring: fetchTaskQuerySchema,
-      tags: ["Clicks"],
+      tags: ["Tasks"],
+      querystring: clickTaskQuerySchema,
     },
-    handler: taskController.fetch,
+    handler: taskController.clickInsert,
   });
 }
