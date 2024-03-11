@@ -1,0 +1,84 @@
+TAP version 14
+{"level":30,"time":1710156192097,"pid":32840,"hostname":"UV","reqId":"req-1","req":{"method":"GET","url":"/api/v1/categories/","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+{"level":30,"time":1710156192129,"pid":32840,"hostname":"UV","reqId":"req-1","res":{"statusCode":200},"responseTime":24.771700024604797,"msg":"request completed"}
+# Subtest: GET /api/v1/categories
+    ok 1 - should be equal
+    ok 2 - should be equal
+    1..2
+ok 1 - GET /api/v1/categories # time=2516.966ms
+
+{"level":30,"time":1710156192824,"pid":32840,"hostname":"UV","reqId":"req-1","req":{"method":"GET","url":"/health","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+# Subtest: GET /health
+    ok 1 - should be equal
+    ok 2 - should be equal
+    1..2
+ok 2 - GET /health # time=681.86ms
+
+{"level":30,"time":1710156192825,"pid":32840,"hostname":"UV","reqId":"req-1","res":{"statusCode":200},"responseTime":0.6678999662399292,"msg":"request completed"}
+not ok 3 - timeout!
+  ---
+  signal: null
+  handles:
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+        - timeout
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+        - timeout
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+        - timeout
+  expired: TAP
+  test: TAP
+  ...
+
+1..3
