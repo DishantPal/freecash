@@ -13,4 +13,5 @@ export const postbackSchema = z.object({
   ikey: z.string(),
   hash: z.string(),
 });
+
 export type postbackQuerySchema = z.infer<typeof postbackSchema>;

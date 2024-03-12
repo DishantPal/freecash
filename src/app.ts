@@ -56,7 +56,10 @@ export const createApp = (): FastifyInstance => {
   app.register(fastifySwagger, swaggerOptions);
   app.register(fastifySwaggerUi, swaggerUiOptions);
   redisPlugin(app, {
-    url: config.env.redis.url ? config.env.redis.url.toString() : "",
+    // url: config.env.redis.url ? config.env.redis.url.toString() : "",
+    port: Number(config.env.redis.port), // Redis port
+    host: config.env.redis.host, // Redis host
+    password: config.env.redis.password,
   });
   // Register autoload for routes
   app.register(autoload, {

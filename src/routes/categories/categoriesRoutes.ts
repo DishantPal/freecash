@@ -8,7 +8,7 @@ export default async function (app: FastifyInstance) {
     method: "GET",
     url: "/",
     schema: {
-      // response: { 200: fetchCategoryResponseSchema },
+      response: { 200: fetchCategoryResponseSchema },
       tags: ["Categories"],
     },
     handler: categoriesController.fetch,

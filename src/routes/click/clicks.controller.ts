@@ -26,10 +26,10 @@ export const clickInsert = async (req: FastifyRequest, reply: FastifyReply) => {
     referer
   );
   if (result) {
-    return reply.status(201).send({
-      success: 1,
+    return reply.status(200).send({
+      success: true,
       message: "Inserted SuccessFull",
-      error: 0,
+      error: null,
       msg: null,
     });
   } else {

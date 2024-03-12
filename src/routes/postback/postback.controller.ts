@@ -123,7 +123,7 @@ export const validate = async (req: FastifyRequest, reply: FastifyReply) => {
     if (ins) {
       return reply.status(401).send({ error: "Invalid credentials." });
     } else {
-      return reply.status(503).send("Error creating log");
+      return reply.status(503).send({ error: "Error creating log" });
     }
   }
 };

@@ -1,4 +1,54 @@
 import { z } from "zod";
+const GoalSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  payout: z.number(),
+  cashback: z.number(),
+});
+
+const CategorySchema = z.object({
+  name: z.string(),
+  id: z.number(),
+  icon: z.string().nullable(),
+  bg_color: z.string(),
+  sort_order: z.number(),
+});
+
+const ProviderSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  icon: z.string().nullable(),
+});
+
+const TaskSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  instructions: z.string(),
+  id: z.number(),
+  network: z.string(),
+  offer_id: z.string(),
+  category_id: z.number(),
+  image: z.string().url(),
+  url: z.string().url(),
+  payout: z.string(),
+  countries: z.array(z.string()),
+  platforms: z.array(z.string()),
+  status: z.string(),
+  is_featured: z.number(),
+  goals_count: z.number(),
+  goals: z.array(GoalSchema),
+  provider: ProviderSchema,
+  category: CategorySchema,
+});
+
+export const ApiResponseSchema = z.object({
+  success: z.literal("true"),
+  data: z.object({
+    tasks: z.array(TaskSchema),
+  }),
+  error: z.string().nullable(),
+  msg: z.string().nullable(),
+});
 
 export const taskGoalSchema = z.object({
   name: z.string(),
@@ -21,7 +71,7 @@ export const taskProviderSchema = z.object({
   icon: z.string(),
 });
 
-export const taskItemSchema = z.object({
+export const zodTaskItemSchema = z.object({
   name: z.string(),
   description: z.string(),
   instructions: z.string(),
@@ -42,13 +92,11 @@ export const taskItemSchema = z.object({
   category: taskCategorySchema,
 });
 
-export const tasksSchema = z.array(taskItemSchema, taskProviderSchema);
+export const tasksSchema = z.array(zodTaskItemSchema, taskProviderSchema);
 
-export const fetchTaskResponseSchema = z.object({
+export const zodFetchTaskResponseSchema = z.object({
   success: z.boolean(),
-  data: z.object({
-    tasks: tasksSchema,
-  }),
+  data: z.array(tasksSchema),
   error: z.string().nullable(),
   msg: z.string().nullable(),
 });
@@ -62,19 +110,5 @@ export const fetchTaskQuerySchema = z.object({
   network: z.string().optional().nullable(),
   category: z.string().optional().nullable(),
 });
-export const clickTaskSchema = z.object({
-  platform: z.string().max(50),
-  task_type: z.string().max(25),
-  network: z.string().max(25),
-  task_offer_id: z.string().max(50).nullable(),
-  campaign_id: z.string().max(50),
-});
-export const clickTaskQuerySchema = z.object({
-  platform: z.string().max(50),
-  task_type: z.string().max(25),
-  network: z.string().max(25),
-  campaign_id: z.string().max(50),
-});
 
-export type ClickTaskQuery = z.infer<typeof clickTaskSchema>;
 export type FetchTaskQuery = z.infer<typeof fetchTaskQuerySchema>;

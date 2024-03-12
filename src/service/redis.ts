@@ -8,19 +8,23 @@ declare module "fastify" {
   }
 }
 
-const redisPlugin: FastifyPluginAsync<{ url: string }> = async (
-  fastify,
-  options
-) => {
-  const redis: any = new Redis(options.url);
-  // Decorate the fastify instance with the redis client
-  // Correct the decoration to directly assign the Redis instance
+const redisPlugin: FastifyPluginAsync<{
+  host: string;
+  port: number;
+  password: string;
+}> = async (fastify, options) => {
+  const redis: any = new Redis({
+    host: options.host,
+    port: options.port,
+    password: options.password,
+  });
+
   fastify.decorate("redis", redis);
 
-  // Graceful shutdown
-  fastify.addHook("onClose", (fastifyInstance, done) => {
-    fastifyInstance.redis.quit().then(() => done());
+  fastify.addHook("onClose", async (fastifyInstance) => {
+    await fastifyInstance.redis.quit();
   });
+
   return redis;
 };
 
