@@ -22,6 +22,21 @@ export default async function (app: FastifyInstance) {
     schema: {
       body: registerUserSchema,
       tags: ["Authentication"],
+      response: {
+        200: z.object({
+          success: z.boolean(),
+          message: z.string(),
+          token: z.string(),
+        }),
+
+        409: z.object({
+          success: z.boolean(),
+          error: z.string(),
+        }),
+        500: z.object({
+          error: z.string(),
+        }),
+      },
     },
     handler: authController.register,
   });
@@ -31,6 +46,16 @@ export default async function (app: FastifyInstance) {
     schema: {
       body: loginSchema,
       tags: ["Authentication"],
+      response: {
+        200: z.object({
+          success: z.boolean(),
+          token: z.string(),
+        }),
+        401: z.object({
+          success: z.boolean().default(false),
+          error: z.string(),
+        }),
+      },
     },
     handler: authController.login,
   });

@@ -34,10 +34,11 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
         `${config.env.app.appUrl}/api/v1/auth/verify-email/?token=${accessToken}`
       );
       // req.session.set("accessToken", accessToken);
-      reply.setCookie("accessToken", accessToken.toString());
+      reply.setCookie("accessToken", accessToken.toString(), { path: "/" });
       return reply.status(200).send({
         success: true,
         message: "Registered successfully!",
+        token: accessToken,
       });
     } else {
       return reply.status(500).send({ error: "Internal Server Error" });
@@ -68,6 +69,7 @@ export const login = async (req: FastifyRequest, reply: FastifyReply) => {
       if (checkSession !== undefined) {
         return reply.status(200).send({
           success: true,
+          token: checkSession,
         });
       } else {
         let newAccessToken = await createJWTToken(
@@ -76,9 +78,12 @@ export const login = async (req: FastifyRequest, reply: FastifyReply) => {
         );
         //Encrpted session
         // req.session.set("accessToken", newAccessToken);
-        reply.setCookie("accessToken", newAccessToken.toString());
+        reply.setCookie("accessToken", newAccessToken.toString(), {
+          path: "/",
+        });
         return reply.status(200).send({
           success: true,
+          token: newAccessToken,
         });
       }
     }
