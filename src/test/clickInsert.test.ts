@@ -9,7 +9,7 @@ test("GET /api/v1/task/click/insert", async (t) => {
 
   const res = await app.inject({
     method: "GET",
-    url: "/api/v1/task/click/insert",
+    url: "/api/v1/click/insert",
     headers: {
       Authorization: token,
     },

@@ -6,7 +6,7 @@ import { z } from "zod";
 
 export default async function (app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().route({
-    method: "GET",
+    method: "POST",
     url: "/",
     schema: {
       querystring: postbackSchema,

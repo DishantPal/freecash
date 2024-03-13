@@ -66,9 +66,29 @@ export const createApp = (): FastifyInstance => {
     dir: join(__dirname, "routes"),
     options: { prefix: "/api/v1" }, // Use a prefix for all routes
   });
-  const data = db.selectFrom("settings").selectAll().execute();
-  data.then((res: any) => {
-    app.redis.set("settings", JSON.stringify(res));
+  const web = db
+    .selectFrom("settings")
+    .selectAll()
+    .where("group", "=", "web")
+    .execute();
+  web.then((res: any) => {
+    app.redis.set("web_settings", JSON.stringify(res));
+  });
+  const email = db
+    .selectFrom("settings")
+    .selectAll()
+    .where("group", "=", "email")
+    .execute();
+  email.then((res: any) => {
+    app.redis.set("email_settings", JSON.stringify(res));
+  });
+  const seo = db
+    .selectFrom("settings")
+    .selectAll()
+    .where("group", "=", "seo")
+    .execute();
+  seo.then((res: any) => {
+    app.redis.set("seo_settings", JSON.stringify(res));
   });
   return app;
 };

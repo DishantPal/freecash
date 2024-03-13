@@ -1,5 +1,5 @@
 TAP version 14
-{"level":30,"time":1710156192106,"pid":37764,"hostname":"UV","reqId":"req-1","req":{"method":"GET","url":"/api/v1/task/click/insert?platform=web&network=adnetwork&task_type=click&campaign_id=1234","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+{"level":30,"time":1710317397630,"pid":640,"hostname":"UV","reqId":"req-1","req":{"method":"GET","url":"/api/v1/click/insert?platform=web&network=adnetwork&task_type=click&campaign_id=1234","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
 # Subtest: GET /api/v1/task/click/insert
     not ok 1 - should be equal
       ---
@@ -107,7 +107,7 @@ TAP version 14
       ...
     
     1..3
-not ok 1 - GET /api/v1/task/click/insert # time=2590.888ms
+not ok 1 - GET /api/v1/task/click/insert # time=2516.194ms
   ---
   at:
     fileName: src\test\clickInsert.test.ts
@@ -129,11 +129,55 @@ not ok 1 - GET /api/v1/task/click/insert # time=2590.888ms
     \  const app = await createApp();\n"
   ...
 
-{"level":30,"time":1710156192129,"pid":37764,"hostname":"UV","reqId":"req-1","res":{"statusCode":401},"responseTime":20.76699995994568,"msg":"request completed"}
+{"level":30,"time":1710317397650,"pid":640,"hostname":"UV","reqId":"req-1","res":{"statusCode":401},"responseTime":19.46169999986887,"msg":"request completed"}
 not ok 2 - timeout!
   ---
   signal: null
   handles:
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
+    - type: Socket
+      events:
+        - close
+        - error
+        - prefinish
+        - finish
+        - drain
+        - data
+        - end
+        - readable
+        - connect
     - type: Socket
       events:
         - close

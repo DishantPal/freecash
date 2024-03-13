@@ -3,7 +3,7 @@ import * as task from "./clicks.model";
 import { ClickTaskQuery } from "./clicks.schema";
 import { decodeToken } from "../auth/jwt";
 
-export const clickInsert = async (req: FastifyRequest, reply: FastifyReply) => {
+export const insert = async (req: FastifyRequest, reply: FastifyReply) => {
   const { platform, network, task_type, campaign_id } =
     req.query as ClickTaskQuery;
   const { accessToken } = req.cookies;

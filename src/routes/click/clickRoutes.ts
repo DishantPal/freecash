@@ -24,6 +24,6 @@ export default async function (app: FastifyInstance) {
         }),
       },
     },
-    handler: taskController.clickInsert,
+    handler: taskController.insert,
   });
 }
