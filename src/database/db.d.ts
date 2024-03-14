@@ -6,6 +6,16 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export interface BonusTypes {
+  amount: Decimal;
+  code: string;
+  enabled: Generated<number>;
+  id: number;
+  name: string;
+  qualifying_amount: number;
+  validity_days: Generated<number>;
+}
+
 export interface OfferwallCategories {
   banner_img: Generated<string | null>;
   bg_color: Generated<string | null>;
@@ -123,6 +133,20 @@ export interface Translations {
   trans_value: Generated<string | null>;
 }
 
+export interface UserBonus {
+  admin_note: Generated<string | null>;
+  amount: Decimal;
+  awarded_on: Date;
+  bonus_code: string;
+  created_at: Generated<Date | null>;
+  expires_on: Date;
+  id: number;
+  referred_bonus_id: Generated<number | null>;
+  status: Generated<"confirmed" | "declined" | "pending">;
+  updated_at: Generated<Date | null>;
+  user_id: number;
+}
+
 export interface UserOfferwallSales {
   amount: Decimal;
   created_at: Generated<Date | null>;
@@ -189,6 +213,7 @@ export interface UserTasks {
 }
 
 export interface DB {
+  bonus_types: BonusTypes;
   offerwall_categories: OfferwallCategories;
   offerwall_networks: OfferwallNetworks;
   offerwall_postback_logs: OfferwallPostbackLogs;
@@ -196,6 +221,7 @@ export interface DB {
   offerwall_tasks: OfferwallTasks;
   settings: Settings;
   translations: Translations;
+  user_bonus: UserBonus;
   user_offerwall_sales: UserOfferwallSales;
   user_task_clicks: UserTaskClicks;
   user_tasks: UserTasks;
