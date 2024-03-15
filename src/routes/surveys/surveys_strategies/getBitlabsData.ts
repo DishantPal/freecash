@@ -19,8 +19,13 @@ export interface TransformedSurveyData {
 }
 
 export const getBitlabsData = async(request:FastifyRequest,userId:number,extraParams:any)=>{
-    const data = getBitlabsNetworkData(request,userId);
-    return data;
+    const {provider} = request.query as {provider:string};
+    const networkConfig = await getNetworkConfig(provider);
+
+    const headers = await getHeaders(request, userId);
+    const data = await getBitlabsNetworkData(networkConfig,headers);
+    const transformedData = transformBitlabsData(data.data);
+    return transformedData;
 }
 
 const getNetworkConfig = async(network:string)=>{
@@ -41,11 +46,8 @@ const getHeaders = async(request :FastifyRequest,user_id:number)=>{
     }
     return headers;
 }
-export const getBitlabsNetworkData = async (request: FastifyRequest, userId: number) => {
-    const {provider} = request.query as {provider:string};
-    const networkConfig = await getNetworkConfig(provider);
+export const getBitlabsNetworkData = async (networkConfig: any, headers: any) => {
 
-    const headers = await getHeaders(request, userId);
 
     // Prepare URL and headers for the Bitlabs API request
     const apiUrl = 'https://api.bitlabs.ai/v2/client/surveys';
@@ -67,15 +69,14 @@ export const getBitlabsNetworkData = async (request: FastifyRequest, userId: num
         if (response.status !== 200) {
             throw new Error('Bitlabs Survey API Exception.');
         }
-        const transformedData = transformBitlabsData(response.data);
-        return transformedData;
+  return response.data;
     } catch (error) {
         console.error('Failed to call Bitlabs API:', error);
         throw new Error('Failed to fetch surveys from Bitlabs');
     }
 };
 const transformBitlabsData = (apiData: any): TransformedSurveyData[] => {
-    const surveys = apiData.data.surveys;
+    const surveys = apiData.surveys;
     return surveys.map((survey: any) => ({
         id: survey.id,
         network: 'bitlabs',

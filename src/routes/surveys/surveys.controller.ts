@@ -1,7 +1,7 @@
 // import * as surveys from "./surveys.model";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { decodeToken } from "../auth/jwt";
-import { getBitlabsNetworkData } from "./surveys_strategies/getBitlabsData";
+import { getBitlabsData, getBitlabsNetworkData } from "./surveys_strategies/getBitlabsData";
 import { getCachedData } from "./surveys.cache";
 import collect from "collect.js";   
 
@@ -17,9 +17,10 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
   const cacheKey: string = `surveys_${provider}_${decoded.id}`;
   const data = await getCachedData(
     cacheKey,
-    () => getBitlabsNetworkData(req, decoded.id),
+    () => getBitlabsData(req, decoded.id,null),
     "60"
   );
+
 // Assuming data is an array of surveys
 let surveyCollection = collect(data);
 

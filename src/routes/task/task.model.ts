@@ -74,3 +74,7 @@ export const fetch = async (
     .execute();
   return query;
 };
+const translatable = ["name","description","instructions"]
+const date=["created_at","updated_at","start_date","end_date"]
+const money=["payout"]
+const hidden=["id","status"]

@@ -61,6 +61,9 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
         sort_order: task.sort_order,
       },
     }));
+    //cache
+
+    
 
     return reply.status(200).send({
       success: "true",
