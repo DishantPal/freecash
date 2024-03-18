@@ -9,7 +9,7 @@ import {
   loginBodySchema,
   registerUserSchema,
 } from "./auth.schema";
-
+import emailEvent from "../../events/emailEvent";
 export const register = async (req: FastifyRequest, reply: FastifyReply) => {
   const { name, email, password } = req.body as registerUserSchema;
   let hashPassword: string = await bcrypt.hash(password, 10);
@@ -25,14 +25,13 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
         { name: name, email: email },
         `${parseInt(config.env.app.expiresIn)}h`
       );
-      const info = await sendEmail(
-        config.env.app.email,
-        email,
-        "Email Verification Link",
-        `Hello👋,${name} 
-        Please verify your email by clicking this link`,
-        `${config.env.app.appUrl}/api/v1/auth/verify-email/?token=${accessToken}`
-      );
+      emailEvent.emit("sendEmail", {
+        fromEmail: config.env.app.email,
+        toEmail: email,
+        subject: "Email Verification Link",
+        text: `Hello👋, ${name}. Please verify your email by clicking this link.`,
+        link: `${config.env.app.appUrl}/api/v1/auth/verify-email/?token=${accessToken}`,
+      });
       // req.session.set("accessToken", accessToken);
       reply.setCookie("accessToken", accessToken.toString(), { path: "/" });
       return reply.status(200).send({
@@ -107,6 +106,14 @@ export const verifyEmail = async (
           Welcome to Freecash`,
       ""
     );
+    emailEvent.emit("sendEmail", {
+      fromEmail: config.env.app.email,
+      toEmail: decoded.email,
+      subject: "Welcome🙌🙌",
+      text: `Hello👋, 
+      Welcome to Freecash`,
+      link: "",
+    });
     reply.status(200).send({
       success: "true",
       message: "Your email is successfully verified you can login now",
@@ -143,6 +150,13 @@ export const forgotPassword = async (
         `Hello👋, click the link below to reset your password`,
         `${resetLink}`
       );
+      emailEvent.emit("sendEmail", {
+        fromEmail: config.env.app.email,
+        toEmail: email,
+        subject: "Password Reset Link",
+        text: `Hello👋, click the link below to reset your password`,
+        link: `${resetLink}`,
+      });
       return reply.status(200).send({
         success: "true",
         message: "Password reset link sent to your email",

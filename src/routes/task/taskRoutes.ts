@@ -14,7 +14,7 @@ export default async function (app: FastifyInstance) {
       querystring: fetchTaskQuerySchema,
       tags: ["tasks"],
       response: {
-        200: ApiResponseSchema,
+        // 200: ApiResponseSchema,
         401: z.object({
           error: z.string(),
         }),

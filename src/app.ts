@@ -90,6 +90,14 @@ export const createApp = (): FastifyInstance => {
   seo.then((res: any) => {
     app.redis.set("seo_settings", JSON.stringify(res));
   });
+  const cashback = db
+    .selectFrom("settings")
+    .selectAll()
+    .where("name", "=", "default_currency")
+    .execute();
+  cashback.then((res: any) => {
+    app.redis.set("default_currency", JSON.stringify(res));
+  });
   return app;
 };
 

@@ -1,6 +1,7 @@
 import { QueryCreator, sql } from "kysely";
 import app from "../../app";
 import { db } from "../../database/database";
+import transformResponse from "../../utils/transformResponse";
 
 export const fetch = async (
   countries: string[] | null,
@@ -12,7 +13,7 @@ export const fetch = async (
   category: number | null
 ) => {
   // Query:
-  const query = await db
+  const result = await db
     .selectFrom([
       "offerwall_tasks",
       "offerwall_networks",
@@ -36,7 +37,7 @@ export const fetch = async (
       "offerwall_tasks.goals_count",
       "offerwall_tasks.network_goals",
       "offerwall_networks.code",
-      "offerwall_networks.name",
+      "offerwall_networks.name as network_name",
       "offerwall_networks.logo",
       "offerwall_categories.id as category_id",
       "offerwall_categories.icon",
@@ -72,9 +73,17 @@ export const fetch = async (
         )
     )
     .execute();
-  return query;
+  // console.log(result);
+  const cashbackCache = await app.redis.get("default_currency");
+
+  const transformedData = await transformResponse(result, columns, "en", "INR");
+  console.log(transformedData);
+
+  return result;
 };
-const translatable = ["name","description","instructions"]
-const date=["created_at","updated_at","start_date","end_date"]
-const money=["payout"]
-const hidden=["id","status"]
+export const columns = {
+  translatable: ["Name", "description", "instructions", "category_name"],
+  hidden: ["ID", "status", "category_id"],
+  money: ["payout"],
+  date: ["created_at", "updated_at", "start_date", "end_date"],
+};

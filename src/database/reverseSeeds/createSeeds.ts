@@ -26,7 +26,7 @@ async function generateSeeders(tableName: TableExpression<DB, keyof DB>) {
   // Seeder file path
   const seederFilePath = path.join(
     __dirname,
-    "reverseSeeds",
+    "seeders",
     `${tableName}_seeds_${timestamp}.ts`
   );
 
@@ -43,7 +43,7 @@ async function generateSeeders(tableName: TableExpression<DB, keyof DB>) {
   // Seeder file template
   const seederFileTemplate = `
 import { Kysely, SqliteDialect } from 'kysely';
-import { db } from "../database/database";
+import { db } from "../../database";
 async function seed(db: Kysely<any>) {
   ${seederContent}
 }
@@ -55,7 +55,7 @@ seed(db).then(() => {
 
   // Write the seeder file
   await fs.writeFileSync(
-    `src/reverseSeeds/${tableName}_seeds_${timestamp}.ts`,
+    `src/database/reverseSeeds/seeders/${tableName}_seeds_${timestamp}.ts`,
     seederFileTemplate,
     "utf8"
   );

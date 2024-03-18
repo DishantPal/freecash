@@ -8,8 +8,8 @@ async function generateMigrationCode(schemaName: string, database: string) {
     const tableData = await sql<any>`SELECT table_name 
      FROM information_schema.tables 
      WHERE table_schema = ${schemaName};`.execute(db);
+
     tableData.rows.forEach(async (tableName: any) => {
-      console.log(tableName.table_name);
       const schemaResult = await sql<any>`
         SELECT COLUMN_NAME,COLUMN_TYPE, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT, COLUMN_KEY, EXTRA
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -58,9 +58,10 @@ WHERE
         // Unique
         if (COLUMN_KEY === "UNI") constraints.push("unique()");
         // Default Value
-        if (COLUMN_DEFAULT && COLUMN_DEFAULT !== "NULL") {
-          if (COLUMN_TYPE === "timestamp") {
+        if (COLUMN_DEFAULT) {
+          if (DATA_TYPE === "timestamp") {
             constraints.push(`defaultTo(sql<any>\`CURRENT_TIMESTAMP\`)`);
+            console.log("CONSTRAINTS:", constraints);
           } else {
             constraints.push(`defaultTo(sql<any>\`${COLUMN_DEFAULT}\`)`);
           }
@@ -139,7 +140,7 @@ WHERE
       // Optionally, write the generated code to files
       const migrationFilePath = path.join(
         __dirname,
-        `${timestamp}_${tableName.table_name}_migration.ts`
+        `./reverseMigration/${timestamp}_${tableName.table_name}_migration.ts`
       );
       fs.writeFileSync(
         migrationFilePath,
