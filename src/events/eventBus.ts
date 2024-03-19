@@ -1,21 +1,21 @@
 // eventBus.ts
 import { EventEmitter } from "events";
+import { eventListeners } from "./Events";
+import { eventNames } from "process";
 
 interface EventPayload {
   [key: string]: any;
 }
+const emitter = new EventEmitter();
 
-class EventBus {
-  private emitter = new EventEmitter();
+export const initializeEvents = (eventName: string) => () => {
+  const event = eventListeners[eventName];
 
-  emit(event: string, payload: EventPayload): void {
-    console.log(`Emitting event: ${event}`);
-    this.emitter.emit(event, payload);
-  }
+  event.forEach((listener: any) => {
+    emitter.on(eventName, (payload) => listener(payload));
+  });
+};
 
-  on(event: string, listener: (payload: EventPayload) => void): void {
-    this.emitter.on(event, listener);
-  }
-}
-
-export const eventBus = new EventBus();
+export const dispatchEvent = (eventName: string, payload: any) => {
+  emitter.emit(eventName, payload);
+};

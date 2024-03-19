@@ -18,6 +18,8 @@ import { config } from "./config/config";
 import redisPlugin from "./service/redis";
 import { swaggerOptions, swaggerUiOptions } from "./utils/swagger";
 import { db } from "./database/database";
+import { initializeEvents } from "./events/eventBus";
+import { eventListeners } from "./events/Events";
 
 export const createApp = (): FastifyInstance => {
   const app = fastify({ logger: true }) as FastifyInstance;
