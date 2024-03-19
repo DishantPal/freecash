@@ -9,7 +9,7 @@ import {
   loginBodySchema,
   registerUserSchema,
 } from "./auth.schema";
-import emailEvent from "../../events/emailEvent";
+import emailEvents from "../../events/emailEvent";
 export const register = async (req: FastifyRequest, reply: FastifyReply) => {
   const { name, email, password } = req.body as registerUserSchema;
   let hashPassword: string = await bcrypt.hash(password, 10);
@@ -25,7 +25,7 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
         { name: name, email: email },
         `${parseInt(config.env.app.expiresIn)}h`
       );
-      emailEvent.emit("sendEmail", {
+      emailEvents({
         fromEmail: config.env.app.email,
         toEmail: email,
         subject: "Email Verification Link",
@@ -98,20 +98,19 @@ export const verifyEmail = async (
   const user = await auth.login(decoded.email);
   if (user?.is_verified == 0) {
     await auth.updateIsVerified(decoded.email);
-    const info = await sendEmail(
-      config.env.app.email,
-      decoded.email,
-      "Welcome🙌🙌",
-      `Hello👋, 
-          Welcome to Freecash`,
-      ""
-    );
-    emailEvent.emit("sendEmail", {
+    // const info = await sendEmail(
+    //   config.env.app.email,
+    //   decoded.email,
+    //   "Welcome🙌🙌",
+    //   `Hello👋,
+    //       Welcome to Freecash`,
+    //   ""
+    // );
+    emailEvents({
       fromEmail: config.env.app.email,
       toEmail: decoded.email,
-      subject: "Welcome🙌🙌",
-      text: `Hello👋, 
-      Welcome to Freecash`,
+      subject: "Email Verification Link",
+      text: `Hello👋`,
       link: "",
     });
     reply.status(200).send({
@@ -143,17 +142,17 @@ export const forgotPassword = async (
         `${parseInt(config.env.app.expiresIn)}h`
       );
       const resetLink = `${config.env.app.appUrl}/auth/reset-password/?token=${resetToken}`;
-      const info = await sendEmail(
-        config.env.app.email,
-        email,
-        "Password Reset Link",
-        `Hello👋, click the link below to reset your password`,
-        `${resetLink}`
-      );
-      emailEvent.emit("sendEmail", {
+      // const info = await sendEmail(
+      //   config.env.app.email,
+      //   email,
+      //   "Password Reset Link",
+      //   `Hello👋, click the link below to reset your password`,
+      //   `${resetLink}`
+      // );
+      emailEvents({
         fromEmail: config.env.app.email,
         toEmail: email,
-        subject: "Password Reset Link",
+        subject: "Email Verification Link",
         text: `Hello👋, click the link below to reset your password`,
         link: `${resetLink}`,
       });
