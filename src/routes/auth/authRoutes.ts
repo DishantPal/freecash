@@ -13,6 +13,7 @@ import {
   passwordSchema,
   registerUserSchema,
 } from "./auth.schema";
+import fastifyPassport from "@fastify/passport";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 export default async function (app: FastifyInstance) {
@@ -112,4 +113,28 @@ export default async function (app: FastifyInstance) {
     },
     handler: authController.changePassword,
   });
+  app.get(
+    "/google",
+    {
+      preValidation: fastifyPassport.authenticate("google", {
+        scope: ["profile", "email"],
+      }),
+      schema: { tags: ["Authentication"] },
+    },
+    async () => {
+      console.log("GOOGLE API forward");
+    }
+  );
+  app.get(
+    "/facebook",
+    {
+      preValidation: fastifyPassport.authenticate("facebook", {
+        scope: ["profile", "email"],
+      }),
+      schema: { tags: ["Authentication"] },
+    },
+    async () => {
+      console.log("facebook API forward");
+    }
+  );
 }

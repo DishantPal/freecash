@@ -24,18 +24,14 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
     network || null,
     Number(category) || null
   );
-
+  console.log(result);
   if (result != null) {
     // Added type assertion to result to allow .map()
     const tasks = result.map((task: any) => ({
-      name: task.Name ? JSON.parse(task.Name)?.en || null : null,
-      description: task.description
-        ? JSON.parse(task.description)?.en || null
-        : null,
-      instructions: task.instructions
-        ? JSON.parse(task.instructions)?.en || null
-        : null,
-      id: task.ID,
+      name: task.Name,
+      description: task.description,
+      instructions: task.instructions,
+      id: task.task_id,
       network: task.network,
       offer_id: task.offer_id,
       category_id: task.category_id,
@@ -62,8 +58,6 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
       },
     }));
     //cache
-
-    
 
     return reply.status(200).send({
       success: "true",

@@ -9,7 +9,7 @@ export default async function (app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().route({
     // preHandler: isAuthenticated,
     method: "GET",
-    url: "/",
+    url: "/fetch",
     schema: {
       querystring: fetchTaskQuerySchema,
       tags: ["tasks"],

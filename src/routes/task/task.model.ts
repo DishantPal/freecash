@@ -16,14 +16,24 @@ export const fetch = async (
   const result = await db
     .selectFrom([
       "offerwall_tasks",
-      "offerwall_networks",
-      "offerwall_categories",
+      // "offerwall_networks",
+      // "offerwall_categories",
     ])
+    .leftJoin(
+      "offerwall_networks",
+      "offerwall_networks.name",
+      "offerwall_tasks.network"
+    )
+    .leftJoin(
+      "offerwall_categories",
+      "offerwall_categories.id",
+      "offerwall_tasks.category_id"
+    )
     .select([
+      "offerwall_tasks.id as task_id",
       "offerwall_tasks.name as Name",
       "offerwall_tasks.description",
       "offerwall_tasks.instructions",
-      "offerwall_tasks.id as ID",
       "offerwall_tasks.network",
       "offerwall_tasks.offer_id",
       "offerwall_tasks.category_id",
@@ -39,7 +49,7 @@ export const fetch = async (
       "offerwall_networks.code",
       "offerwall_networks.name as network_name",
       "offerwall_networks.logo",
-      "offerwall_categories.id as category_id",
+      "offerwall_categories.id",
       "offerwall_categories.icon",
       "offerwall_categories.name as category_name",
       "offerwall_categories.bg_color",
@@ -72,18 +82,26 @@ export const fetch = async (
             : 20
         )
     )
+    // .orderBy("offerwall_tasks.id", "asc")
     .execute();
-  // console.log(result);
+  console.log(result);
   const cashbackCache = await app.redis.get("default_currency");
-
-  const transformedData = await transformResponse(result, columns, "en", "INR");
-  console.log(transformedData);
-
-  return result;
+  console.log(cashbackCache);
+  if (cashbackCache) {
+    const transformedData = await transformResponse(
+      result,
+      columns,
+      "en",
+      cashbackCache.toString()
+    );
+    console.log(transformedData);
+    return transformedData;
+  }
 };
+
 export const columns = {
-  translatable: ["Name", "description", "instructions", "category_name"],
-  hidden: ["ID", "status", "category_id"],
+  translatable: ["Name", "description"],
+  // hidden: ["ID", "status", "category_id"],
   money: ["payout"],
   date: ["created_at", "updated_at", "start_date", "end_date"],
 };

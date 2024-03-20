@@ -9,7 +9,8 @@ import {
   loginBodySchema,
   registerUserSchema,
 } from "./auth.schema";
-import emailEvents from "../../events/emailEvent";
+import { dispatchEvent } from "../../events/eventBus";
+// import emailEvents from "../../events/emailEvent";
 export const register = async (req: FastifyRequest, reply: FastifyReply) => {
   const { name, email, password } = req.body as registerUserSchema;
   let hashPassword: string = await bcrypt.hash(password, 10);
@@ -25,7 +26,7 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
         { name: name, email: email },
         `${parseInt(config.env.app.expiresIn)}h`
       );
-      emailEvents({
+      dispatchEvent("user_registered", {
         fromEmail: config.env.app.email,
         toEmail: email,
         subject: "Email Verification Link",
@@ -106,7 +107,7 @@ export const verifyEmail = async (
     //       Welcome to Freecash`,
     //   ""
     // );
-    emailEvents({
+    dispatchEvent("user_registered", {
       fromEmail: config.env.app.email,
       toEmail: decoded.email,
       subject: "Email Verification Link",
@@ -149,7 +150,7 @@ export const forgotPassword = async (
       //   `Hello👋, click the link below to reset your password`,
       //   `${resetLink}`
       // );
-      emailEvents({
+      dispatchEvent("user_registered", {
         fromEmail: config.env.app.email,
         toEmail: email,
         subject: "Email Verification Link",

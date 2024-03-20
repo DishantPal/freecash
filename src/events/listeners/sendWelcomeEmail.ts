@@ -1,7 +1,9 @@
 import { sendEmail } from "../../utils/sendEmail";
-
-export const sendRegisterEmail = async (payload: any) => {
-  sendEmail(
+interface EventPayload {
+  [key: string]: any;
+}
+export const sendWelcomeEmail = async (payload: EventPayload) => {
+  await sendEmail(
     payload.fromEmail,
     payload.toEmail,
     payload.subject,
