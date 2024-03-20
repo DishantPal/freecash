@@ -51,7 +51,7 @@ export const fetch = async (
       "offerwall_networks.logo",
       "offerwall_categories.id",
       "offerwall_categories.icon",
-      "offerwall_categories.name as category_name",
+      "offerwall_categories.name as name",
       "offerwall_categories.bg_color",
       "offerwall_categories.sort_order",
     ])
@@ -100,7 +100,7 @@ export const fetch = async (
 };
 
 export const columns = {
-  translatable: ["Name", "description"],
+  translatable: ["Name", "description", "name"],
   // hidden: ["ID", "status", "category_id"],
   money: ["payout"],
   date: ["created_at", "updated_at", "start_date", "end_date"],
