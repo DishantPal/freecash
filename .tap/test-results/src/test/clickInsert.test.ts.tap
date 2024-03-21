@@ -1,5 +1,5 @@
 TAP version 14
-{"level":30,"time":1710317397630,"pid":640,"hostname":"UV","reqId":"req-1","req":{"method":"GET","url":"/api/v1/click/insert?platform=web&network=adnetwork&task_type=click&campaign_id=1234","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+{"level":30,"time":1710997778321,"pid":34440,"hostname":"UV","reqId":"req-1","req":{"method":"GET","url":"/api/v1/click/insert?platform=web&network=adnetwork&task_type=click&campaign_id=1234","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
 # Subtest: GET /api/v1/task/click/insert
     not ok 1 - should be equal
       ---
@@ -8,15 +8,13 @@ TAP version 14
         fileName: src\test\clickInsert.test.ts
         lineNumber: 24
         columnNumber: 5
-        isToplevel: true
+        typeName: Test
         generated:
           fileName: src/test/clickInsert.test.ts
-          lineNumber: 31
+          lineNumber: 22
           columnNumber: 7
       stack: |
-        src/test/clickInsert.test.ts:24:5
-        Generator.next
-        fulfilled (src/test/clickInsert.test.ts:5:58)
+        Test.<anonymous> (src/test/clickInsert.test.ts:24:5)
       source: "  });\r
       
         \r
@@ -43,15 +41,13 @@ TAP version 14
         fileName: src\test\clickInsert.test.ts
         lineNumber: 25
         columnNumber: 5
-        isToplevel: true
+        typeName: Test
         generated:
           fileName: src/test/clickInsert.test.ts
-          lineNumber: 32
+          lineNumber: 23
           columnNumber: 7
       stack: |
-        src/test/clickInsert.test.ts:25:5
-        Generator.next
-        fulfilled (src/test/clickInsert.test.ts:5:58)
+        Test.<anonymous> (src/test/clickInsert.test.ts:25:5)
       source: "\r
       
         \  t.equal(res.statusCode, 201);\r
@@ -78,15 +74,13 @@ TAP version 14
         fileName: src\test\clickInsert.test.ts
         lineNumber: 26
         columnNumber: 5
-        isToplevel: true
+        typeName: Test
         generated:
           fileName: src/test/clickInsert.test.ts
-          lineNumber: 33
+          lineNumber: 24
           columnNumber: 7
       stack: |
-        src/test/clickInsert.test.ts:26:5
-        Generator.next
-        fulfilled (src/test/clickInsert.test.ts:5:58)
+        Test.<anonymous> (src/test/clickInsert.test.ts:26:5)
       source: "  t.equal(res.statusCode, 201);\r
       
         \  t.equal(res.json().success, 1);\r
@@ -107,7 +101,7 @@ TAP version 14
       ...
     
     1..3
-not ok 1 - GET /api/v1/task/click/insert # time=2516.194ms
+not ok 1 - GET /api/v1/task/click/insert # time=3720.015ms
   ---
   at:
     fileName: src\test\clickInsert.test.ts
@@ -116,7 +110,7 @@ not ok 1 - GET /api/v1/task/click/insert # time=2516.194ms
     typeName: Object
     generated:
       fileName: src/test/clickInsert.test.ts
-      lineNumber: 14
+      lineNumber: 5
       columnNumber: 16
   source: "import { createApp } from \"../app\";\r
   
@@ -129,103 +123,4 @@ not ok 1 - GET /api/v1/task/click/insert # time=2516.194ms
     \  const app = await createApp();\n"
   ...
 
-{"level":30,"time":1710317397650,"pid":640,"hostname":"UV","reqId":"req-1","res":{"statusCode":401},"responseTime":19.46169999986887,"msg":"request completed"}
-not ok 2 - timeout!
-  ---
-  signal: null
-  handles:
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-        - timeout
-    - type: Socket
-      events:
-        - close
-        - error
-        - prefinish
-        - finish
-        - drain
-        - data
-        - end
-        - readable
-        - connect
-        - timeout
-  expired: TAP
-  test: TAP
-  ...
-
-1..2
+{"level":30,"time":1710997778334,"pid":34440,"hostname":"UV","reqId":"req-1","res":{"statusCode":401},"responseTime":10.830799996852875,"msg":"request completed"}

@@ -21,10 +21,10 @@ const ProviderSchema = z.object({
 });
 
 const TaskSchema = z.object({
+  id: z.number(),
   name: z.string(),
   description: z.string(),
   instructions: z.string(),
-  id: z.number(),
   network: z.string(),
   offer_id: z.string(),
   category_id: z.number(),
@@ -42,7 +42,7 @@ const TaskSchema = z.object({
 });
 
 export const ApiResponseSchema = z.object({
-  success: z.literal("true"),
+  success: z.boolean().default(true),
   data: z.object({
     tasks: z.array(TaskSchema),
   }),

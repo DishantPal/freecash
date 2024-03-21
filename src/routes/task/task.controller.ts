@@ -28,10 +28,10 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
   if (result != null) {
     // Added type assertion to result to allow .map()
     const tasks = result.map((task: any) => ({
+      id: task.task_id,
       name: task.Name,
       description: task.description,
       instructions: task.instructions,
-      id: task.task_id,
       network: task.network,
       offer_id: task.offer_id,
       category_id: task.category_id,

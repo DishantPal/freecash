@@ -2,7 +2,7 @@ import { db } from "../../database/database";
 export const findUser = async (id: number) => {
   const result = db
     .selectFrom("users")
-    .selectAll()
+    .select(["id", "name", "email"])
     .where("id", "=", id)
     .executeTakeFirst();
   return result;

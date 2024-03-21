@@ -12,6 +12,7 @@ export const isAuthenticated = async (
     return; // Stop execution to prevent calling the next handler
   }
   const decoded = await decodeToken(reply, token);
+  req.userId = decoded.id;
   const userExist = await auth.login(decoded.email);
   if (!userExist) {
     reply.status(404).send({ error: "User Not Found" });

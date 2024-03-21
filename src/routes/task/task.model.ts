@@ -100,7 +100,7 @@ export const fetch = async (
 };
 
 export const columns = {
-  translatable: ["Name", "description", "name"],
+  translatable: ["Name", "description", "name", "instructions"],
   // hidden: ["ID", "status", "category_id"],
   money: ["payout"],
   date: ["created_at", "updated_at", "start_date", "end_date"],

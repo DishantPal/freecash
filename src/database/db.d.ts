@@ -116,6 +116,29 @@ export interface OfferwallTasks {
   url: string;
 }
 
+export interface PaymentTypes {
+  account_input_hint: string;
+  account_input_label: string;
+  account_input_type: string;
+  bonus_allowed: Generated<number>;
+  cashback_allowed: Generated<number>;
+  code: string;
+  created_at: Generated<Date>;
+  deleted_at: Generated<Date>;
+  enabled: Generated<number>;
+  id: Generated<number>;
+  image: string;
+  minimum_amount: Decimal;
+  name: string;
+  payment_group: string;
+  payment_inputs: string;
+  transaction_bonus_amount: Generated<Decimal | null>;
+  transaction_bonus_type: Generated<"fixed" | "percent" | null>;
+  transaction_fees_amount: Generated<Decimal | null>;
+  transaction_fees_type: Generated<"fixed" | "percent" | null>;
+  updated_at: Generated<Date>;
+}
+
 export interface Settings {
   created_at: Generated<Date | null>;
   group: Generated<string>;
@@ -163,6 +186,27 @@ export interface UserOfferwallSales {
   task_type: string;
   transaction_id: string;
   updated_at: Generated<Date | null>;
+  user_id: number;
+}
+
+export interface UserPayments {
+  account: string;
+  admin_note: Generated<string | null>;
+  amount: number;
+  api_reference_id: Generated<string | null>;
+  api_response: Generated<string | null>;
+  api_status: Generated<string | null>;
+  bonus_amount: Generated<number | null>;
+  cashback_amount: Generated<number | null>;
+  created_at: Generated<Date>;
+  id: Generated<number>;
+  note: Generated<string | null>;
+  paid_at: Generated<Date | null>;
+  payment_id: number;
+  payment_input: string;
+  payment_method_code: string;
+  status: "completed" | "created" | "declined" | "processing";
+  updated_at: Generated<Date>;
   user_id: number;
 }
 
@@ -219,10 +263,12 @@ export interface DB {
   offerwall_postback_logs: OfferwallPostbackLogs;
   offerwall_task_goals: OfferwallTaskGoals;
   offerwall_tasks: OfferwallTasks;
+  payment_types: PaymentTypes;
   settings: Settings;
   translations: Translations;
   user_bonus: UserBonus;
   user_offerwall_sales: UserOfferwallSales;
+  user_payments: UserPayments;
   user_task_clicks: UserTaskClicks;
   user_tasks: UserTasks;
   users: Users;

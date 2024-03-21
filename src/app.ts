@@ -72,7 +72,7 @@ export const createApp = (): FastifyInstance => {
     dir: join(__dirname, "routes"),
     options: { prefix: "/api/v1" }, // Use a prefix for all routes
   });
-
+  app.decorateRequest("userId", "");
   // //// Initialize the event bus
   // const events = Object.keys(eventListeners);
   // events.forEach((event) => {

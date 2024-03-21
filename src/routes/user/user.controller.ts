@@ -10,6 +10,8 @@ export const findUser = async (req: FastifyRequest, reply: FastifyReply) => {
     return reply.status(200).send({
       success: true,
       data: userData,
+      error: "null",
+      msg: "null",
     });
   }
 };
