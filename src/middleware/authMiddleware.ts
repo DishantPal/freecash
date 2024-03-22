@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { decodeToken } from "../routes/auth/jwt";
-import * as auth from "../routes/auth/auth.model";
+import { decodeToken } from "../modules/auth/jwt";
+import * as auth from "../modules/auth/auth.model";
 
 export const isAuthenticated = async (
   req: FastifyRequest,

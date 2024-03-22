@@ -1,4 +1,4 @@
-import { getCachedData } from "../routes/surveys/surveys.cache";
+import { getCachedData } from "../modules/surveys/surveys.cache";
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);

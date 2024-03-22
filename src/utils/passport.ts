@@ -1,7 +1,7 @@
 import fastifyPassport from "@fastify/passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as FacebookStrategy } from "passport-facebook";
-import * as auth from "../routes/auth/auth.model";
+import * as auth from "../modules/auth/auth.model";
 import { FastifyRequest } from "fastify";
 import { config } from "../config/config";
 

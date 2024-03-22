@@ -19,10 +19,10 @@ import { config } from "./config/config";
 import redisPlugin from "./service/redis";
 import { swaggerOptions, swaggerUiOptions } from "./utils/swagger";
 import { db } from "./database/database";
-import { createJWTToken } from "./routes/auth/jwt";
-// import { initializeEvents } from "./events/eventBus";
-// import { eventListeners } from "./events/Events";
+import { createJWTToken } from "./modules/auth/jwt";
 import "./utils/passport";
+import { error, success } from "./utils/sendResponse";
+
 export const createApp = (): FastifyInstance => {
   const app = fastify({ logger: true }) as FastifyInstance;
   const sessionSecret = config.env.app.sessionSecret?.toString();
@@ -36,6 +36,10 @@ export const createApp = (): FastifyInstance => {
   app.register(require("fastify-healthcheck"));
   app.setErrorHandler(
     (error: Error, request: FastifyRequest, reply: FastifyReply) => {
+      //handle zoderror
+      if (error.name === "ZodError") {
+        return reply.status(400).send(error.toString());
+      }
       console.log(error.toString());
       reply.send({ error: error });
     }
@@ -61,23 +65,41 @@ export const createApp = (): FastifyInstance => {
   app.register(fastifyPassport.secureSession());
   app.register(fastifySwagger, swaggerOptions);
   app.register(fastifySwaggerUi, swaggerUiOptions);
+  app.register(require("@fastify/rate-limit"), {
+    // Global settings can be applied here, if needed
+  });
+
   redisPlugin(app, {
     // url: config.env.redis.url ? config.env.redis.url.toString() : "",
     port: Number(config.env.redis.port), // Redis port
     host: config.env.redis.host, // Redis host
     password: config.env.redis.password,
   });
-  // Register autoload for routes
+  // Register autoload for modules
   app.register(autoload, {
-    dir: join(__dirname, "routes"),
-    options: { prefix: "/api/v1" }, // Use a prefix for all routes
+    dir: join(__dirname, "modules"),
+    options: { prefix: "/api/v1" }, // Use a prefix for all modules
   });
   app.decorateRequest("userId", "");
-  // //// Initialize the event bus
-  // const events = Object.keys(eventListeners);
-  // events.forEach((event) => {
-  //   initializeEvents(event);
-  // });
+  // Decorate reply with sendSuccess and sendError
+  app.decorateReply(
+    "sendSuccess",
+    function (
+      this: FastifyReply,
+      data: any,
+      statusCodes: number = 200,
+      msg: string | null = null
+    ) {
+      success(this, statusCodes, data, msg);
+    }
+  );
+
+  app.decorateReply(
+    "sendError",
+    function (this: FastifyReply, err: string, statusCodes: number = 500): any {
+      error(this, statusCodes, err);
+    }
+  );
   const web = db
     .selectFrom("settings")
     .selectAll()
