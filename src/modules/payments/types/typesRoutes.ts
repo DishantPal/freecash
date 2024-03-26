@@ -13,9 +13,6 @@ export default async function (app: FastifyInstance) {
       tags: ["payments"],
       response: {
         200: fetchTypesResponseSchema,
-        500: z.object({
-          error: z.string(),
-        }),
       },
     },
     handler: paymentController.fetchTypes,

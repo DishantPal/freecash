@@ -20,7 +20,28 @@ interface UserPayment {
   paid_at?: Date | null;
 }
 export const fetchTypes = async () => {
-  const result = await db.selectFrom("payment_types").selectAll().execute();
+  const result = await db
+    .selectFrom("payment_types")
+    .select([
+      "id",
+      "code",
+      "name",
+      "image",
+      "account_input_type",
+      "account_input_label",
+      "account_input_hint",
+      "payment_inputs",
+      "minimum_amount",
+      "transaction_fees_amount",
+      "transaction_fees_type",
+      "transaction_bonus_amount",
+      "transaction_bonus_type",
+      "cashback_allowed",
+      "bonus_allowed",
+      "payment_group",
+      "enabled",
+    ])
+    .execute();
   return result;
 };
 export const fetchType = async (code: string) => {

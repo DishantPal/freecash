@@ -41,7 +41,12 @@ export const createApp = (): FastifyInstance => {
         return reply.status(400).send(error.toString());
       }
       console.log(error.toString());
-      reply.send({ error: error });
+
+      //handle fastify rate limit errors
+      if (error.message === "Rate limit exceeded") {
+        return reply.status(429).send("Too many requests");
+      }
+      reply.sendError(error.toString(), 500);
     }
   );
   app.register(cors);
@@ -67,6 +72,8 @@ export const createApp = (): FastifyInstance => {
   app.register(fastifySwaggerUi, swaggerUiOptions);
   app.register(require("@fastify/rate-limit"), {
     // Global settings can be applied here, if needed
+    max: 1, // limit each IP to 100 requests per windowMs
+    timeWindow: "30 second", // start counting after 1 minute
   });
 
   redisPlugin(app, {
