@@ -14,14 +14,22 @@ fastifyPassport.use(
     },
     async (accessToken: any, refreshToken: any, profile: any, done: any) => {
       const email = profile.emails[0].value;
-      console.log(accessToken);
       const googleId = profile.id;
+      console.log("accessToken Google: ", accessToken);
       const name = profile.displayName;
+      const referralCode = (Math.random() + 1).toString(36).substring(7);
       const userExist = await auth.login(email);
+
       if (userExist) {
         return done(null, userExist);
       }
-      const result = await auth.registerSocial(name, email, googleId, null);
+      const result = await auth.registerSocial(
+        name,
+        email,
+        googleId,
+        null,
+        referralCode
+      );
       if (result) {
         return done(null, profile);
       }

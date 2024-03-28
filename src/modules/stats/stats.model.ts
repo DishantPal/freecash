@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import { db } from "../../database/database";
 
-export const fetchStats = async () => {
+export const fetchStats = async (userId: any) => {
   const confirmedEarningsResult = await db
     .selectFrom(["user_offerwall_sales", "user_bonus"])
     .select([
@@ -9,6 +9,8 @@ export const fetchStats = async () => {
         "totalConfirmed"
       ),
     ])
+    .where("user_offerwall_sales.user_id", "=", userId)
+    .where("user_bonus.user_id", "=", userId)
     .execute();
   const confirmedEarnings = confirmedEarningsResult[0]?.totalConfirmed || 0;
 
@@ -19,6 +21,8 @@ export const fetchStats = async () => {
         "totalPending"
       ),
     ])
+    .where("user_offerwall_sales.user_id", "=", userId)
+    .where("user_bonus.user_id", "=", userId)
     .execute();
   const pendingEarnings = pendingEarningsResult[0]?.totalPending || 0;
 
@@ -32,6 +36,7 @@ export const fetchStats = async () => {
         "inProgressPayments"
       ),
     ])
+    .where("user_payments.user_id", "=", userId)
     .execute();
   const { totalPaid, inProgressPayments } = paymentsResult[0];
 
@@ -39,6 +44,7 @@ export const fetchStats = async () => {
     .selectFrom("user_offerwall_sales")
     .select(sql`count(*)`.as("offerCount"))
     .where("status", "=", "confirmed")
+    .where("user_offerwall_sales.user_id", "=", userId)
     .execute();
   const offerCompleted = offerCompletedResult[0]?.offerCount || 0;
 
@@ -56,6 +62,7 @@ export const fetchStats = async () => {
       ),
     ])
     .where("status", "=", "completed")
+    .where("user_payments.user_id", "=", userId)
     .execute();
   const { earningsLastDay, earningsLastWeek, earningsLastMonth } =
     earningsInPeriods[0];

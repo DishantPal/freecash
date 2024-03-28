@@ -159,11 +159,11 @@ export interface Translations {
 export interface UserBonus {
   admin_note: Generated<string | null>;
   amount: Decimal;
-  awarded_on: Date;
+  awarded_on: Generated<Date | null>;
   bonus_code: string;
   created_at: Generated<Date | null>;
-  expires_on: Date;
-  id: number;
+  expires_on: Generated<Date | null>;
+  id: Generated<number>;
   referred_bonus_id: Generated<number | null>;
   status: Generated<"confirmed" | "declined" | "pending">;
   updated_at: Generated<Date | null>;
@@ -219,6 +219,7 @@ export interface Users {
   is_verified: Generated<number | null>;
   name: string;
   password: Generated<string | null>;
+  referral_code: string;
   updated_at: Generated<Date | null>;
 }
 

@@ -3,7 +3,7 @@ import * as bonuses from "./bonuses.model";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
-  const token = req.cookies.accessToken || req.headers["Authorization"];
+  const token = req.cookies.token || req.headers["Authorization"];
   const decoded = await decodeToken(reply, token);
   const result = await bonuses.fetch(decoded.id);
   if (result) {

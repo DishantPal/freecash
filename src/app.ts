@@ -4,7 +4,7 @@ import fastify, {
   FastifyRequest,
 } from "fastify";
 import fastifyPassport from "@fastify/passport";
-import { join } from "path";
+import path, { join } from "path";
 import autoload from "@fastify/autoload";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
@@ -22,7 +22,8 @@ import { db } from "./database/database";
 import { createJWTToken } from "./modules/auth/jwt";
 import "./utils/passport";
 import { error, success } from "./utils/sendResponse";
-
+import ejs from "ejs";
+import view from "@fastify/view";
 export const createApp = (): FastifyInstance => {
   const app = fastify({ logger: true }) as FastifyInstance;
   const sessionSecret = config.env.app.sessionSecret?.toString();
@@ -35,7 +36,7 @@ export const createApp = (): FastifyInstance => {
   }
   app.register(require("fastify-healthcheck"));
   app.setErrorHandler(
-    (error: Error, request: FastifyRequest, reply: FastifyReply) => {
+    (error: any, request: FastifyRequest, reply: FastifyReply) => {
       //handle zoderror
       if (error.name === "ZodError") {
         return reply.status(400).send(error.toString());
@@ -72,10 +73,20 @@ export const createApp = (): FastifyInstance => {
   app.register(fastifySwaggerUi, swaggerUiOptions);
   app.register(require("@fastify/rate-limit"), {
     // Global settings can be applied here, if needed
-    max: 1, // limit each IP to 100 requests per windowMs
-    timeWindow: "30 second", // start counting after 1 minute
+    // max: 1, // limit each IP to 100 requests per windowMs
+    // timeWindow: "30 second", // start counting after 1 minute
   });
-
+  // app.register(require("@fastify/static"), {
+  //   root: path.join(__dirname, "public"),
+  //   prefix: "/public/",
+  // });
+  app.register(require("@fastify/formbody"));
+  app.register(view, {
+    engine: {
+      ejs,
+    },
+    templates: path.join(__dirname, "templates"),
+  });
   redisPlugin(app, {
     // url: config.env.redis.url ? config.env.redis.url.toString() : "",
     port: Number(config.env.redis.port), // Redis port
@@ -149,19 +160,15 @@ export const createApp = (): FastifyInstance => {
       }),
     },
     async (req: FastifyRequest, reply: FastifyReply) => {
-      let accessToken = await createJWTToken(
+      let token = await createJWTToken(
         { user: req.user },
         `${parseInt(config.env.app.expiresIn)}h`
       );
-      reply.setCookie("accessToken", accessToken.toString(), {
+
+      reply.setCookie("token", token, {
         path: "/",
-        httpOnly: false,
-        expires: new Date(Date.now() + 3600000),
-        sameSite: "none",
-        secure: true,
-        domain: ".enactweb.com",
       });
-      reply.redirect(`/dashboard?token=${accessToken}`);
+      reply.redirect(`/dashboard?token=${token}`);
       // reply.send({ success: "true", token: accessToken });
     }
   );
@@ -176,21 +183,49 @@ export const createApp = (): FastifyInstance => {
       let newAccessToken = Math.floor(Math.random() * 10);
       reply.setCookie("accessToken", newAccessToken.toString(), {
         path: "/",
-        httpOnly: false,
-        expires: new Date(Date.now() + 3600000),
-        sameSite: "none",
-        secure: true,
-        domain: ".enactweb.com",
       });
       reply.redirect(`/dashboard?token=${newAccessToken}`);
       // reply.send({ success: "true", token: newAccessToken });
     }
   );
+  app.get("/auth/login", (req: FastifyRequest, reply: FastifyReply) => {
+    return reply.view("login.ejs");
+  });
+  app.get("/auth/register", (req: FastifyRequest, reply: FastifyReply) => {
+    return reply.view("register.ejs");
+  });
+  app.get(
+    "/auth/reset-password/",
+    (req: FastifyRequest, reply: FastifyReply) => {
+      const { token } = req.query as { token: string };
+      return reply.view("resetPassword.ejs", { token: token });
+    }
+  );
+  app.get(
+    "/auth/forgot-password",
+    (req: FastifyRequest, reply: FastifyReply) => {
+      return reply.view("forgot.ejs");
+    }
+  );
   app.get("/dashboard", (req: FastifyRequest, reply: FastifyReply) => {
-    reply.send({
-      success: true,
-      user: req.user,
-    });
+    const { token } = req.query as { token: string };
+    console.log(token);
+    if (token) {
+      return reply.view("success.ejs", {
+        message: "Welcome to Freecash",
+        token: token,
+      });
+    } else {
+      return reply.view("success.ejs", {
+        message: "Success", //for forgot reset password page same method likelogin register need to follow and no query string will be there so message will be just Success
+        token: null,
+      });
+    }
+    // reply.send({
+    //   success: true,
+    //   user: req.user,
+    //   token: req.cookies.accessToken,
+    // });
   });
   return app;
 };

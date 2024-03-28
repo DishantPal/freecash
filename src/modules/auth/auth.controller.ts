@@ -12,13 +12,19 @@ import {
 import { dispatchEvent } from "../../events/eventBus";
 // import emailEvents from "../../events/emailEvent";
 export const register = async (req: FastifyRequest, reply: FastifyReply) => {
-  const { name, email, password } = req.body as registerUserSchema;
+  const { name, email, password, referral } = req.body as registerUserSchema;
   let hashPassword: string = await bcrypt.hash(password, 10);
   const userExist = await auth.login(email);
   if (userExist) {
     return reply.sendError("User already exists", 409);
   } else {
-    const register = await auth.register(name, email, hashPassword);
+    const referralCode = (Math.random() + 1).toString(36).substring(7);
+    const register = await auth.register(
+      name,
+      email,
+      hashPassword,
+      referralCode
+    );
     if (register) {
       let accessToken = await createJWTToken(
         { name: name, email: email },
@@ -32,7 +38,9 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
         link: `${config.env.app.appUrl}/api/v1/auth/verify-email/?token=${accessToken}`,
       });
       // req.session.set("accessToken", accessToken);
-      reply.setCookie("accessToken", accessToken.toString(), { path: "/" });
+      reply.setCookie("token", accessToken.toString(), { path: "/" });
+
+      // return reply.redirect(`/dashboard?token=${accessToken}`);
       return reply.sendSuccess(
         { token: accessToken },
         201,
@@ -59,13 +67,14 @@ export const login = async (req: FastifyRequest, reply: FastifyReply) => {
       //Checking session
       let checkSession = req.cookies.accessToken;
       if (checkSession !== undefined) {
-        return reply.sendSuccess(
-          {
-            token: checkSession,
-          },
-          200,
-          "Logged in successfully"
-        );
+        return reply.redirect(`/dashboard?token=${checkSession}`);
+        // return reply.sendSuccess(
+        //   {
+        //     token: checkSession,
+        //   },
+        //   200,
+        //   "Logged in successfully"
+        // );
       } else {
         let newAccessToken = await createJWTToken(
           { name: userData.name, email: userData.email, id: userData.id },
@@ -73,9 +82,10 @@ export const login = async (req: FastifyRequest, reply: FastifyReply) => {
         );
         //Encrpted session
         // req.session.set("accessToken", newAccessToken);
-        reply.setCookie("accessToken", newAccessToken.toString(), {
+        reply.setCookie("token", newAccessToken.toString(), {
           path: "/",
         });
+        // return reply.redirect(`/dashboard?token=${newAccessToken}`);
         return reply.sendSuccess(
           { token: newAccessToken },
           200,
@@ -110,11 +120,15 @@ export const verifyEmail = async (
       text: `Hello👋`,
       link: "",
     });
-    reply.sendSuccess(
-      "",
-      200,
-      "Your email is successfully verified you can login now"
-    );
+    return reply.view("success.ejs", {
+      message: "Your email is successfully verified you can login now",
+      token: null,
+    });
+    // reply.sendSuccess(
+    //   "",
+    //   200,
+    //   "Your email is successfully verified you can login now"
+    // );
   } else {
     reply.sendError("Your email is already verified please login", 409);
   }
@@ -148,6 +162,10 @@ export const forgotPassword = async (
         text: `Hello👋, click the link below to reset your password`,
         link: `${resetLink}`,
       });
+      // return reply.view("success.ejs", {
+      //   message: "Password reset link sent to your email",
+      //   token: null,
+      // });
       return reply.sendSuccess(
         "",
         200,
@@ -172,6 +190,10 @@ export const resetPassword = async (
     // Continue with your password reset logic
     const hashedPassword = await bcrypt.hash(password, 10);
     await auth.updatePassword(decoded.email, hashedPassword);
+    // return reply.view("success.ejs", {
+    //   message: "Password reset successful",
+    //   token: null,
+    // });
     return reply.sendSuccess("", 200, "Password reset successful");
   }
 };
@@ -205,7 +227,10 @@ export const changePassword = async (
       } else {
         const hashedNewPassword = await bcrypt.hash(password, 10);
         await auth.updatePassword(email, hashedNewPassword);
-        return reply.sendSuccess("", 200, "Password changed successfully");
+        return reply.view("success.ejs", {
+          message: "Password reset successful",
+          token: null,
+        });
       }
     }
   } else {
@@ -213,8 +238,11 @@ export const changePassword = async (
   }
 };
 export const logout = (req: FastifyRequest, reply: FastifyReply) => {
-  reply.clearCookie("accessToken", { path: "/api/v1/auth" });
+  console.log(req.cookies.accessToken);
+  req.logout();
+  reply.clearCookie("token", { path: "/" });
   req.session.delete();
+  return reply.redirect("/auth/login");
   return reply.send({
     message: "Logout Successful",
   });

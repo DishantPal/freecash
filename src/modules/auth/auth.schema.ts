@@ -46,6 +46,7 @@ export const registerUserSchema = z.object({
           "Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 digit",
       }
     ),
+  referral: z.string().optional(),
 });
 export type loginBodySchema = z.infer<typeof loginSchema>;
 export type registerUserSchema = z.infer<typeof registerUserSchema>;
