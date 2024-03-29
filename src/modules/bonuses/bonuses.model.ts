@@ -8,3 +8,19 @@ export const fetch = async (user_id: number) => {
     .execute();
   return result;
 };
+export const checkBonusStatus = async (userId: number) => {
+  const check = await db
+    .selectFrom("user_bonus")
+    .select(["status"])
+    .where("user_id", "=", userId)
+    .executeTakeFirst();
+  return check;
+};
+export const bonusDetails = async (type: string) => {
+  const result = await db
+    .selectFrom("bonus_types")
+    .select(["code", "amount","validity_days"])
+    .where("code", "=", type)
+    .executeTakeFirst();
+  return result;
+};

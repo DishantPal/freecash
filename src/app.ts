@@ -24,6 +24,8 @@ import "./utils/passport";
 import { error, success } from "./utils/sendResponse";
 import ejs from "ejs";
 import view from "@fastify/view";
+import * as settings from "./modules/settings/settings.model";
+import { getSetCachedData } from "./utils/getCached";
 export const createApp = (): FastifyInstance => {
   const app = fastify({ logger: true }) as FastifyInstance;
   const sessionSecret = config.env.app.sessionSecret?.toString();
@@ -118,38 +120,46 @@ export const createApp = (): FastifyInstance => {
       error(this, statusCodes, err);
     }
   );
-  const web = db
-    .selectFrom("settings")
-    .selectAll()
-    .where("group", "=", "web")
-    .execute();
-  web.then((res: any) => {
-    app.redis.set("web_settings", JSON.stringify(res));
-  });
-  const email = db
-    .selectFrom("settings")
-    .selectAll()
-    .where("group", "=", "email")
-    .execute();
-  email.then((res: any) => {
-    app.redis.set("email_settings", JSON.stringify(res));
-  });
-  const seo = db
-    .selectFrom("settings")
-    .selectAll()
-    .where("group", "=", "seo")
-    .execute();
-  seo.then((res: any) => {
-    app.redis.set("seo_settings", JSON.stringify(res));
-  });
-  const cashback = db
-    .selectFrom("settings")
-    .select("val")
-    .where("name", "=", "default_currency")
-    .execute();
-  cashback.then((res: any) => {
-    app.redis.set("default_currency", JSON.stringify(res[0].val));
-  });
+  // getSetCachedData(
+  //   "web_settings",
+  //   async () => {
+  //     return await settings.fetch("web");
+  //   },
+  //   3600
+  // );
+  // getSetCachedData(
+  //   "seo_settings",
+  //   async () => {
+  //     return await settings.fetch("seo");
+  //   },
+  //   3600
+  // );
+  // getSetCachedData(
+  //   "email_settings",
+  //   async () => {
+  //     return await settings.fetch("email");
+  //   },
+  //   3600
+  // );
+  // getSetCachedData(
+  //   "default_currency",
+  //   async () => {
+  //     return await db
+  //       .selectFrom("settings")
+  //       .select("val")
+  //       .where("name", "=", "default_currency")
+  //       .execute();
+  //   },
+  //   3600
+  // );
+  // const cashback = db
+  //   .selectFrom("settings")
+  //   .select("val")
+  //   .where("name", "=", "default_currency")
+  //   .execute();
+  // cashback.then((res: any) => {
+  //   app.redis.set("default_currency", JSON.stringify(res[0].val));
+  // });
   app.get(
     "/auth/google/callback",
     {
@@ -232,4 +242,5 @@ export const createApp = (): FastifyInstance => {
 
 // Call the function with the Redis instance
 const app: FastifyInstance = createApp();
+
 export default app;

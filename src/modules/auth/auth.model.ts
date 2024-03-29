@@ -15,7 +15,7 @@ export const register = async (
       password: password,
       referral_code: referral,
     })
-    .execute();
+    .executeTakeFirst();
   return result;
 };
 export const registerSocial = async (

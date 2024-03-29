@@ -10,6 +10,8 @@ import {
   registerUserSchema,
 } from "./auth.schema";
 import { dispatchEvent } from "../../events/eventBus";
+import { bonusDetails } from "../bonuses/bonuses.model";
+import { referCodeUser } from "../user/user.model";
 // import emailEvents from "../../events/emailEvent";
 export const register = async (req: FastifyRequest, reply: FastifyReply) => {
   const { name, email, password, referral } = req.body as registerUserSchema;
@@ -25,6 +27,7 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
       hashPassword,
       referralCode
     );
+    console.log(register.insertId);
     if (register) {
       let accessToken = await createJWTToken(
         { name: name, email: email },
@@ -37,6 +40,54 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
         text: `Hello👋, ${name}. Please verify your email by clicking this link.`,
         link: `${config.env.app.appUrl}/api/v1/auth/verify-email/?token=${accessToken}`,
       });
+      //Join No Refer bonus_code
+      const noReferBonus = await bonusDetails("join_no_refer");
+
+      //Join With Refer bonus_code
+      const joinReferBonus = await bonusDetails("join_with_refer");
+
+      dispatchEvent("assign_bonus", {
+        user_id: register.insertId,
+        amount: noReferBonus?.amount,
+        bonus_code: noReferBonus?.code,
+        expires_on: null,
+        referred_bonus_id: null,
+      });
+
+      if (joinReferBonus?.validity_days) {
+        const joinReferExpiresOn = new Date();
+        joinReferExpiresOn.setDate(
+          joinReferExpiresOn.getDate() + joinReferBonus?.validity_days
+        );
+        //Join With Refer bonus_code
+        const referBonus = await bonusDetails("refer_bonus");
+        if (referral) {
+          const isReferal = await referCodeUser(referral);
+          if (!isReferal) {
+            return reply.sendError("Invalid Referal Code", 409);
+          }
+          //join with refer
+          dispatchEvent("assign_bonus", {
+            user_id: register.insertId,
+            amount: joinReferBonus?.amount,
+            bonus_code: joinReferBonus?.code,
+            expires_on: joinReferExpiresOn.toISOString(),
+            referred_bonus_id: isReferal.id,
+          });
+          //referal Bonus
+          if (referBonus?.validity_days) {
+            const expiresOn = new Date();
+            expiresOn.setDate(expiresOn.getDate() + referBonus?.validity_days);
+            dispatchEvent("assign_bonus", {
+              user_id: isReferal.id,
+              amount: referBonus?.amount,
+              bonus_code: referBonus?.code,
+              expires_on: expiresOn.toISOString(),
+              referred_bonus_id: null,
+            });
+          }
+        }
+      }
       // req.session.set("accessToken", accessToken);
       reply.setCookie("token", accessToken.toString(), { path: "/" });
 

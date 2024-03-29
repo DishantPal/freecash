@@ -24,3 +24,11 @@ export const updateUser = async (
     .execute();
   return result;
 };
+export const referCodeUser = async (referCode: string) => {
+  const result = db
+    .selectFrom("users")
+    .select(["id"])
+    .where("referral_code", "=", referCode)
+    .executeTakeFirst();
+  return result;
+};

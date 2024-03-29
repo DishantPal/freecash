@@ -6,6 +6,34 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export interface Banners {
+  btn_link: string;
+  btn_text: string;
+  created_at: Generated<Date>;
+  description: string;
+  desktop_img: string;
+  have_content: Generated<number | null>;
+  id: Generated<number | null>;
+  link: string;
+  mobile_img: string;
+  status: "" | "draft" | "publish" | "trash";
+  title: string;
+  updated_at: Generated<Date | null>;
+}
+
+export interface Blocks {
+  blocks: string;
+  content: string;
+  created_at: Generated<Date>;
+  description: string;
+  id: Generated<number>;
+  name: string;
+  purpose: string;
+  status: "" | "draft" | "publish" | "trash";
+  title: string;
+  updated_at: Generated<Date | null>;
+}
+
 export interface BonusTypes {
   amount: Decimal;
   code: string;
@@ -14,6 +42,15 @@ export interface BonusTypes {
   name: string;
   qualifying_amount: number;
   validity_days: Generated<number>;
+}
+
+export interface Menus {
+  created_at: Generated<Date>;
+  id: Generated<number>;
+  links: string;
+  status: "" | "draft" | "publish" | "trash";
+  title: string;
+  "updated-at": Generated<Date | null>;
 }
 
 export interface OfferwallCategories {
@@ -114,6 +151,18 @@ export interface OfferwallTasks {
   status: Generated<"draft" | "publish" | "trash" | null>;
   updated_at: Generated<Date | null>;
   url: string;
+}
+
+export interface Pages {
+  content: string;
+  created_at: Generated<Date>;
+  exclude_seo: number;
+  id: Generated<number>;
+  name: string;
+  slug: Generated<string | null>;
+  status: "" | "draft" | "publish" | "trash";
+  title: string;
+  updated_at: Generated<Date | null>;
 }
 
 export interface PaymentTypes {
@@ -258,12 +307,16 @@ export interface UserTasks {
 }
 
 export interface DB {
+  banners: Banners;
+  blocks: Blocks;
   bonus_types: BonusTypes;
+  menus: Menus;
   offerwall_categories: OfferwallCategories;
   offerwall_networks: OfferwallNetworks;
   offerwall_postback_logs: OfferwallPostbackLogs;
   offerwall_task_goals: OfferwallTaskGoals;
   offerwall_tasks: OfferwallTasks;
+  pages: Pages;
   payment_types: PaymentTypes;
   settings: Settings;
   translations: Translations;
