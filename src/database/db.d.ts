@@ -269,6 +269,7 @@ export interface Users {
   name: string;
   password: Generated<string | null>;
   referral_code: string;
+  referrer_code: Generated<string | null>;
   updated_at: Generated<Date | null>;
 }
 

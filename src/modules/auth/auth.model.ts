@@ -5,7 +5,8 @@ export const register = async (
   name: string,
   email: string,
   password: string,
-  referral: string
+  referral: string,
+  referrer: string | null
 ) => {
   const result = db
     .insertInto("users")
@@ -14,6 +15,7 @@ export const register = async (
       name: name,
       password: password,
       referral_code: referral,
+      referrer_code: referrer ? referrer : null,
     })
     .executeTakeFirst();
   return result;

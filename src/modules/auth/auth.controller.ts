@@ -25,7 +25,8 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
       name,
       email,
       hashPassword,
-      referralCode
+      referralCode,
+      referral ? referral : null
     );
     console.log(register.insertId);
     if (register) {

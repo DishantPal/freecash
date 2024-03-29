@@ -6,6 +6,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("name", sql<any>`varchar(255)`, (col) => col.notNull())
     .addColumn("email", sql<any>`varchar(255)`, (col) => col.notNull())
     .addColumn("password", sql<any>`varchar(255)`, (col) => col.defaultTo(sql<any>`NULL`))
+    .addColumn("referral_code", sql<any>`varchar(255)`, (col) => col.notNull())
+    .addColumn("referrer_code", sql<any>`varchar(255)`, (col) => col.defaultTo(sql<any>`NULL`))
     .addColumn("googleId", sql<any>`varchar(255)`, (col) => col.defaultTo(sql<any>`NULL`))
     .addColumn("facebookId", sql<any>`varchar(255)`, (col) => col.defaultTo(sql<any>`NULL`))
     .addColumn("is_verified", "boolean", (col) => col.defaultTo(sql<any>`0`))

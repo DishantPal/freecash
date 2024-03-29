@@ -5,7 +5,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("id", "bigint", (col) => col.primaryKey().autoIncrement().notNull())
     .addColumn("network", "text", (col) => col.notNull())
     .addColumn("transaction_id", "text", (col) => col.notNull())
-    .addColumn("user_id", "bigint", (col) => col.notNull())
+    .addColumn("user_id", "integer", (col) => col.notNull())
     .addColumn("task_offer_id", sql<any>`varchar(255)`, (col) => col.notNull())
     .addColumn("network_goal_id", sql<any>`varchar(255)`, (col) => col.defaultTo(sql<any>`NULL`))
     .addColumn("offer_id", sql<any>`varchar(255)`, (col) => col.notNull())

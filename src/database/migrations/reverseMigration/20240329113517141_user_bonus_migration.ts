@@ -2,12 +2,12 @@ import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema.createTable("user_bonus")
-    .addColumn("id", "bigint", (col) => col.notNull())
+    .addColumn("id", "bigint", (col) => col.primaryKey().autoIncrement().notNull())
     .addColumn("user_id", "integer", (col) => col.notNull())
     .addColumn("bonus_code", sql<any>`varchar(25)`, (col) => col.notNull())
     .addColumn("amount", "text", (col) => col.notNull())
-    .addColumn("awarded_on", "text", (col) => col.notNull())
-    .addColumn("expires_on", "text", (col) => col.notNull())
+    .addColumn("awarded_on", "timestamp", (col) => col.defaultTo(sql<any>`CURRENT_TIMESTAMP`))
+    .addColumn("expires_on", "timestamp", (col) => col.defaultTo(sql<any>`CURRENT_TIMESTAMP`))
     .addColumn("referred_bonus_id", "integer", (col) => col.defaultTo(sql<any>`NULL`))
 .addColumn("status", sql<any>`enum('pending','confirmed','declined')`, (col) => col.notNull().defaultTo(sql<any>`'pending'`))
     .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql<any>`CURRENT_TIMESTAMP`))
