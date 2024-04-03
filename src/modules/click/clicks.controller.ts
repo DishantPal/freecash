@@ -29,3 +29,41 @@ export const insert = async (req: FastifyRequest, reply: FastifyReply) => {
     return reply.sendError("Inserted Failed", 500);
   }
 };
+export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
+  const { network, task_type, platform, date } = req.query as {
+    network: string;
+    task_type: string;
+    platform: string;
+    date: string;
+  };
+  const result = await task.fetch(network, task_type, platform, date,req.userId);
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else {
+    return reply.sendError("Fetched Failed", 500);
+  }
+};
+export const fetchDateClicked = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await task.dateFormat();
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else{
+    return reply.sendError("Fetched Failed", 500);
+  }
+}
+export const fetchTrends = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await task.fetchTrends(req.userId);
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else{
+    return reply.sendError("Fetched Failed", 500);
+  }
+}
+export const clickStats = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await task.clickStats(req.userId);
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else{
+    return reply.sendError("Fetched Failed", 500);
+  }
+}

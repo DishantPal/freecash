@@ -10,7 +10,7 @@ export const fetch = async (
   platform: string[] | null,
   featured: number | null,
   network: string | null,
-  category: number | null
+  category: number | null,
 ) => {
   // Query:
   const result = await db

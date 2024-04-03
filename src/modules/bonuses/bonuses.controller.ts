@@ -2,10 +2,13 @@ import { decodeToken } from "../auth/jwt";
 import * as bonuses from "./bonuses.model";
 import { FastifyReply, FastifyRequest } from "fastify";
 
+
 export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
-  const token = req.cookies.token || req.headers["Authorization"];
-  const decoded = await decodeToken(reply, token);
-  const result = await bonuses.fetch(decoded.id);
+  const {  status, date } = req.query as {
+    status: "confirmed" | "declined" | "pending"|null;
+    date: string|null;
+  };
+  const result = await bonuses.fetch(req.userId,status,date);
   if (result) {
     return reply.sendSuccess(
       {
@@ -27,3 +30,29 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
     return reply.callNotFound;
   }
 };
+export const bonusStats = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await bonuses.stats(req.userId);
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else{
+    return reply.sendError("Fetched Failed", 500);
+  }
+}
+
+export const fetchTrends = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await bonuses.fetchTrends(req.userId);
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else{
+    return reply.sendError("Fetched Failed", 500);
+  }
+}
+
+export const fetchDateClicked = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await bonuses.dateFormat();
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else{
+    return reply.sendError("Fetched Failed", 500);
+  }
+}
