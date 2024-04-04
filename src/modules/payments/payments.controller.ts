@@ -84,3 +84,11 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
     return reply.sendError("Internal Server Error", 500);
   }
 };
+export const fetchDate = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await payment.dateFormat();
+  if (result) {
+    return reply.sendSuccess(result, 200, "null");
+  } else {
+    return reply.sendError("Internal Server Error", 500);
+  }
+};

@@ -35,3 +35,11 @@ export const list = async (req: FastifyRequest, reply: FastifyReply) => {
     return reply.sendError("Fetched Failed", 500);
   }
 };
+export const dateFormat = async (req: FastifyRequest, reply: FastifyReply) => {
+  const result = await referred.dateFormat();
+  if (result) {
+    reply.sendSuccess(result, 200, "Fetched SuccessFull");
+  } else {
+    return reply.sendError("Fetched Failed", 500);
+  }
+};

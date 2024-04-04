@@ -52,4 +52,14 @@ export default async function (app: FastifyInstance) {
     },
     handler: referredController.list,
   });
+  app.withTypeProvider<ZodTypeProvider>().route({
+    preHandler: isAuthenticated,
+    method: "GET",
+    url: "/fetch-date-clicked",
+    schema: {
+      tags: ["Referred user"],
+      // response: {200:apiResponseSchema}
+    },
+    handler: referredController.dateFormat,
+  });
 }

@@ -65,4 +65,14 @@ export default async function (app: FastifyInstance) {
     },
     handler: paymentController.fetch,
   });
+  app.withTypeProvider<ZodTypeProvider>().route({
+    preHandler: isAuthenticated,
+    method: "GET",
+    url: "/fetch-date-clicked",
+    schema: {
+      tags: ["payments"],
+      // response: {200:apiResponseSchema}
+    },
+    handler: paymentController.fetchDate,
+  });
 }
