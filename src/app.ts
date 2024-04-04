@@ -43,7 +43,7 @@ export const createApp = (): FastifyInstance => {
       if (error.name === "ZodError") {
         return reply.status(400).send(error.toString());
       }
-      console.log(error.toString());
+      console.log(error);
 
       //handle fastify rate limit errors
       if (error.message === "Rate limit exceeded") {

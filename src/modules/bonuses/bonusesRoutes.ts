@@ -4,7 +4,7 @@ import * as bonusesController from "./bonuses.controller";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { isAuthenticated } from "../../middleware/authMiddleware";
-import { apiResponseSchema } from "./bonuses.schema";
+import { apiResponseSchema, fetchQueryResponse } from "./bonuses.schema";
 
 export default async function (app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().route({
@@ -12,10 +12,7 @@ export default async function (app: FastifyInstance) {
     method: "GET",
     url: "/fetch",
     schema: {
-      querystring:z.object({
-        status: z.enum(["confirmed", "declined", "pending"]).optional(),
-        date: z.string().optional().describe("Date in MM_YYYY format"),
-      }),
+      querystring: fetchQueryResponse,
       response: {
         200: apiResponseSchema,
       },

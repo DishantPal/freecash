@@ -26,4 +26,43 @@ export default async function (app: FastifyInstance) {
     },
     handler: paymentController.insert,
   });
+  app.withTypeProvider<ZodTypeProvider>().route({
+    preHandler: isAuthenticated,
+    method: "GET",
+    url: "/stats",
+    schema: {
+      tags: ["payments"],
+      // response: {
+      //   200: fetchTypesResponseSchema,
+      //   500: z.object({
+      //     error: z.string(),
+      //   }),
+      // },
+    },
+    handler: paymentController.stats,
+  });
+  app.withTypeProvider<ZodTypeProvider>().route({
+    preHandler: isAuthenticated,
+    method: "GET",
+    url: "/payout-history",
+    schema: {
+      tags: ["payments"],
+      querystring: z.object({
+        type: z.string().optional(),
+        date: z.string().optional().describe("MM_YYYY"),
+        page: z.number().optional(),
+        limit: z.number().optional(),
+        status: z
+          .enum(["created", "processing", "completed", "declined"])
+          .optional(),
+      }),
+      // response: {
+      //   200: fetchTypesResponseSchema,
+      //   500: z.object({
+      //     error: z.string(),
+      //   }),
+      // },
+    },
+    handler: paymentController.fetch,
+  });
 }

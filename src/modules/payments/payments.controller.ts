@@ -52,3 +52,35 @@ export const insert = async (req: FastifyRequest, reply: FastifyReply) => {
     return reply.sendError("Insufficient Balance", 400);
   }
 };
+export const stats = async (req: FastifyRequest, reply: FastifyReply) => {
+  const userId = Number(req.userId);
+  const result = await payment.stats(userId);
+  if (result) {
+    return reply.sendSuccess(result, 200, "null");
+  } else {
+    return reply.sendError("Internal Server Error", 500);
+  }
+};
+export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
+  const userId = Number(req.userId);
+  const { pageNumber, limit, type, status, date } = req.query as {
+    pageNumber: number;
+    limit: number;
+    type: string;
+    status: "created" | "processing" | "completed" | "declined" | null;
+    date: string | null;
+  };
+  const result = await payment.fetch(
+    pageNumber,
+    limit,
+    userId,
+    type,
+    status,
+    date
+  );
+  if (result) {
+    return reply.sendSuccess(result, 200, "null");
+  } else {
+    return reply.sendError("Internal Server Error", 500);
+  }
+};

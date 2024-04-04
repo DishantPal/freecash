@@ -44,11 +44,3 @@ export const fetchTypes = async () => {
     .execute();
   return result;
 };
-export const fetchType = async (code: string) => {
-  const result = await db
-    .selectFrom("payment_types")
-    .select(["code", "minimum_amount"])
-    .where("code", "=", code)
-    .executeTakeFirst();
-  return result;
-};

@@ -13,7 +13,7 @@ export const clickTaskQuerySchema = z.object({
   network: z.string().max(25),
   campaign_id: z.string().max(50),
 });
- export const clickInsertResponse =z.object({
+export const clickInsertResponse = z.object({
   success: z.boolean(),
   data: z.string().optional(), // Assuming `data` can be an empty string and is optional.
   error: z
@@ -21,8 +21,10 @@ export const clickTaskQuerySchema = z.object({
     .nullable()
     .optional(), // If `error` can be 'null' as a string or a true null value.
   msg: z.string(), // Corrected to match the JSON response field name.
-})
+});
 export const fetchClickTaskQuerySchema = z.object({
+  page: z.number().optional(),
+  limit: z.number().default(20).optional(),
   platform: z.string().max(50).optional(),
   task_type: z.string().max(25).optional(),
   network: z.string().max(25).optional(),

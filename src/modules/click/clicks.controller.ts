@@ -30,40 +30,54 @@ export const insert = async (req: FastifyRequest, reply: FastifyReply) => {
   }
 };
 export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
-  const { network, task_type, platform, date } = req.query as {
-    network: string;
-    task_type: string;
-    platform: string;
-    date: string;
-  };
-  const result = await task.fetch(network, task_type, platform, date,req.userId);
+  const { pageNumber, limit, network, task_type, platform, date } =
+    req.query as {
+      pageNumber: number;
+      limit: number;
+      network: string;
+      task_type: string;
+      platform: string;
+      date: string;
+    };
+  const result = await task.fetch(
+    pageNumber,
+    limit,
+    network,
+    task_type,
+    platform,
+    date,
+    Number(req.userId)
+  );
   if (result) {
     reply.sendSuccess(result, 200, "Fetched SuccessFull");
   } else {
     return reply.sendError("Fetched Failed", 500);
   }
 };
-export const fetchDateClicked = async (req: FastifyRequest, reply: FastifyReply) => {
+export const fetchDateClicked = async (
+  req: FastifyRequest,
+  reply: FastifyReply
+) => {
   const result = await task.dateFormat();
   if (result) {
     reply.sendSuccess(result, 200, "Fetched SuccessFull");
-  } else{
+  } else {
     return reply.sendError("Fetched Failed", 500);
   }
-}
+};
 export const fetchTrends = async (req: FastifyRequest, reply: FastifyReply) => {
-  const result = await task.fetchTrends(req.userId);
+  const result = await task.fetchTrends(Number(req.userId));
   if (result) {
     reply.sendSuccess(result, 200, "Fetched SuccessFull");
-  } else{
+  } else {
     return reply.sendError("Fetched Failed", 500);
   }
-}
+};
 export const clickStats = async (req: FastifyRequest, reply: FastifyReply) => {
-  const result = await task.clickStats(req.userId);
+  const result = await task.clickStats(Number(req.userId));
   if (result) {
     reply.sendSuccess(result, 200, "Fetched SuccessFull");
-  } else{
+  } else {
     return reply.sendError("Fetched Failed", 500);
   }
-}
+};

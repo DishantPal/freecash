@@ -36,7 +36,9 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
       offer_id: task.offer_id,
       category_id: task.category_id,
       image: task.image,
-      url: task.url,
+      url: req.userId
+        ? (task.url = task.url.replace("#USER_ID", req.userId))
+        : task.url,
       payout: task.payout,
       countries: task.countries ? JSON.parse(task.countries) : null,
       platforms: task.platforms ? JSON.parse(task.platforms) : null,

@@ -9,15 +9,27 @@ export const apiResponseSchema = z.object({
           id: z.number(),
           user_id: z.number(),
           bonus_code: z.string(),
-          amount: z.string(), // Confirm this should be a string, not a number
-          awarded_on: z.date(), // Ensure this matches your date format
-          expires_on: z.date(), // Ensure this matches your date format
+          amount: z.string(),
+          awarded_on: z
+            .string()
+            .transform((val) => new Date(val))
+            .nullable(),
+          expires_on: z
+            .string()
+            .transform((val) => new Date(val))
+            .nullable(),
           referred_bonus_id: z.number().nullable().optional(),
           status: z.string(),
         })
       ),
     })
-    .optional(), // If the whole data object can be optional
-  error: z.union([z.string(), z.null()]).optional(), // If error can be a string or null
-  msg: z.union([z.string(), z.null()]).optional(), // If msg can be a string or null
+    .optional(),
+  error: z.union([z.string(), z.null()]).optional(),
+  msg: z.union([z.string(), z.null()]).optional(),
+});
+export const fetchQueryResponse = z.object({
+  page: z.number().optional(),
+  limit: z.number().optional(),
+  status: z.enum(["confirmed", "declined", "pending"]).optional(),
+  date: z.string().optional().describe("Date in MM_YYYY format"),
 });
