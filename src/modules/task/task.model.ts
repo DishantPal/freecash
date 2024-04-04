@@ -10,7 +10,7 @@ export const fetch = async (
   platform: string[] | null,
   featured: number | null,
   network: string | null,
-  category: number | null,
+  category: number | null
 ) => {
   // Query:
   const result = await db
@@ -84,7 +84,6 @@ export const fetch = async (
     )
     // .orderBy("offerwall_tasks.id", "asc")
     .execute();
-  console.log(result);
   const cashbackCache = await app.redis.get("default_currency");
   console.log(cashbackCache);
   if (cashbackCache) {
@@ -94,7 +93,6 @@ export const fetch = async (
       "en",
       cashbackCache.toString()
     );
-    console.log(transformedData);
     return transformedData;
   }
 };

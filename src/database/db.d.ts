@@ -205,6 +205,18 @@ export interface Translations {
   trans_value: Generated<string | null>;
 }
 
+export interface UserActivities {
+  activity_type: "bonus_earnings" | "payouts" | "referral_earnings" | "referrals" | "tasks_earnings";
+  activity_user_id: number;
+  amount: number;
+  created_at: Generated<Date>;
+  id: Generated<number>;
+  status: string;
+  title: string;
+  updated_at: Generated<Date | null>;
+  url: string;
+}
+
 export interface UserBonus {
   admin_note: Generated<string | null>;
   amount: Decimal;
@@ -277,6 +289,7 @@ export interface UserTaskClicks {
   campaign_id: string;
   clicked_on: Generated<Date>;
   countries: string;
+  created_at: Generated<Date>;
   id: Generated<number>;
   locale: string;
   network: string;
@@ -284,6 +297,7 @@ export interface UserTaskClicks {
   Referer: string;
   task_offer_id: Generated<string | null>;
   task_type: string;
+  updated_at: Generated<Date | null>;
   user_agent: string;
   user_id: number;
 }
@@ -321,6 +335,7 @@ export interface DB {
   payment_types: PaymentTypes;
   settings: Settings;
   translations: Translations;
+  user_activities: UserActivities;
   user_bonus: UserBonus;
   user_offerwall_sales: UserOfferwallSales;
   user_payments: UserPayments;

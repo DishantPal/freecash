@@ -24,7 +24,7 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
     network || null,
     Number(category) || null
   );
-  console.log(result);
+
   if (result != null) {
     // Added type assertion to result to allow .map()
     const tasks = result.map((task: any) => ({
@@ -36,9 +36,7 @@ export const fetch = async (req: FastifyRequest, reply: FastifyReply) => {
       offer_id: task.offer_id,
       category_id: task.category_id,
       image: task.image,
-      url: req.userId
-        ? (task.url = task.url.replace("#USER_ID", req.userId))
-        : task.url,
+      url: task.url,
       payout: task.payout,
       countries: task.countries ? JSON.parse(task.countries) : null,
       platforms: task.platforms ? JSON.parse(task.platforms) : null,
