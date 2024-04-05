@@ -24,26 +24,26 @@ const TaskSchema = z.object({
   id: z.number(),
   name: z.string(),
   description: z.string(),
-  instructions: z.string(),
+  // instructions: z.string(),
   network: z.string(),
   offer_id: z.string(),
-  category_id: z.number(),
+  // category_id: z.number(),
   image: z.string(),
   url: z.string(),
   payout: z.string(),
   countries: z.array(z.string()),
   platforms: z.array(z.string()).nullable(),
-  status: z.string(),
+  // status: z.string(),
   is_featured: z.number(),
-  goals_count: z.number(),
-  goals: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      payout: z.number(),
-      cashback: z.number(),
-    })
-  ),
+  // goals_count: z.number(),
+  // goals: z.array(
+  //   z.object({
+  //     id: z.string(),
+  //     name: z.string(),
+  //     payout: z.number(),
+  //     cashback: z.number(),
+  //   })
+  // ),
   provider: z.object({
     code: z.string().nullable(),
     name: z.string(),

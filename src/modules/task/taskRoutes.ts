@@ -9,7 +9,7 @@ export default async function (app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().route({
     // preHandler: isAuthenticated,
     method: "GET",
-    url: "/fetch",
+    url: "/list",
     schema: {
       querystring: fetchTaskQuerySchema,
       tags: ["tasks"],
@@ -20,6 +20,39 @@ export default async function (app: FastifyInstance) {
         }),
       },
     },
-    handler: taskController.fetch,
+    handler: taskController.list,
+  });
+  app.withTypeProvider<ZodTypeProvider>().route({
+    preHandler: isAuthenticated,
+    method: "GET",
+    url: "/details",
+    schema: {
+      querystring: z.object({
+        offer_id: z.string(),
+      }),
+      tags: ["tasks"],
+      // response: {
+      //   200: ApiResponseSchema,
+      //   401: z.object({
+      //     error: z.string(),
+      //   }),
+      // },
+    },
+    handler: taskController.details,
+  });
+  app.withTypeProvider<ZodTypeProvider>().route({
+    preHandler: isAuthenticated,
+    method: "GET",
+    url: "/active",
+    schema: {
+      tags: ["tasks"],
+      // response: {
+      //   200: ApiResponseSchema,
+      //   401: z.object({
+      //     error: z.string(),
+      //   }),
+      // },
+    },
+    handler: taskController.active,
   });
 }

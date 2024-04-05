@@ -1,6 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import * as payment from "./payments.model";
 import { bodyType } from "./payments.schema";
+import { activityConfig } from "../../config/activityConfig";
+import { dispatchEvent } from "../../events/eventBus";
+
 export const insert = async (req: FastifyRequest, reply: FastifyReply) => {
   const userId = Number(req.userId);
   const {
@@ -44,11 +47,41 @@ export const insert = async (req: FastifyRequest, reply: FastifyReply) => {
       admin_note: admin_note,
     });
     if (result) {
+      //payout_activity
+      dispatchEvent("send_user_activity", {
+        user_id: userId,
+        activity_type: "payouts",
+        icon: activityConfig.payouts.icon,
+        title: activityConfig.payouts.title_status_confirmed,
+        status: "confirmed",
+        url: activityConfig.payouts.url,
+        amount: Number(amount),
+      });
       return reply.sendSuccess("", 200, "Inserted SuccessFull");
     } else {
+      //payout_activity
+      dispatchEvent("send_user_activity", {
+        user_id: userId,
+        activity_type: "payouts",
+        icon: activityConfig.payouts.icon,
+        title: activityConfig.payouts.title_status_confirmed,
+        status: "declined",
+        url: activityConfig.payouts.url,
+        amount: Number(amount),
+      });
       return reply.sendError("Payment Inserted Failed", 500);
     }
   } else {
+    //payout_activity
+    dispatchEvent("send_user_activity", {
+      user_id: userId,
+      activity_type: "payouts",
+      icon: activityConfig.payouts.icon,
+      title: activityConfig.payouts.title_status_confirmed,
+      status: "declined",
+      url: activityConfig.payouts.url,
+      amount: Number(amount),
+    });
     return reply.sendError("Insufficient Balance", 400);
   }
 };

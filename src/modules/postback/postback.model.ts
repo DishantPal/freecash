@@ -59,6 +59,19 @@ export const insert = async (
     .execute();
   return result;
 };
+export const updateTaskStatus = async (
+  transaction_id: string,
+  status: "pending" | "confirmed" | "declined"
+) => {
+  const result = await db
+    .updateTable("user_offerwall_sales")
+    .set({
+      status: status,
+    })
+    .where("transaction_id", "=", transaction_id)
+    .execute();
+  return result;
+};
 
 export const insertTask = async (
   network: string,

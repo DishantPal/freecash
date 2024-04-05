@@ -75,8 +75,8 @@ export const createApp = (): FastifyInstance => {
   app.register(fastifySwaggerUi, swaggerUiOptions);
   app.register(require("@fastify/rate-limit"), {
     // Global settings can be applied here, if needed
-    // max: 1, // limit each IP to 100 requests per windowMs
-    // timeWindow: "30 second", // start counting after 1 minute
+    max: 10, // limit each IP to 100 requests per windowMs
+    timeWindow: "1 minute", // start counting after 1 minute
   });
   // app.register(require("@fastify/static"), {
   //   root: path.join(__dirname, "public"),

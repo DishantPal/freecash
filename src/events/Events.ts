@@ -1,8 +1,9 @@
 import { assignBonus } from "./listeners/assignBonus";
-import { sendWelcomeEmail } from "./listeners/sendWelcomeEmail";
-// import  types pr write types here
+import { sendEmailEvent } from "./listeners/sendWelcomeEmail";
+import { sendActivitiesNotification } from "./listeners/sendUserActivities";
+
 export const eventListeners: any = {
-  user_registered: [sendWelcomeEmail],
+  user_registered: [sendEmailEvent],
   assign_bonus: [assignBonus],
+  send_user_activity: [sendActivitiesNotification],
 };
-//  export const payloadTypes = ["user_registered"];

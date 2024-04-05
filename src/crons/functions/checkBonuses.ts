@@ -1,6 +1,8 @@
 import collect from "collect.js";
 import { db } from "../../database/database";
 import { sql } from "kysely";
+import { dispatchEvent } from "../../events/eventBus";
+import { activityConfig } from "../../config/activityConfig";
 
 const checkJoinNoReferBonus = async () => {
   const bonusDetails = await db
@@ -43,6 +45,16 @@ const checkJoinNoReferBonus = async () => {
           .set({ status: "confirmed" })
           .where("user_id", "=", i.user_id)
           .execute();
+        dispatchEvent("send_user_activity", {
+          user_id: i.user_id,
+          activity_type: "bonus_earnings",
+          icon: activityConfig.bonus_earnings.icon,
+          title: activityConfig.bonus_earnings.title_status_confirmed,
+          status: "confirmed",
+          url: activityConfig.bonus_earnings.url,
+          amount: Number(32323),
+          data: JSON.stringify({ message: "Register Bonus Confirmed" }),
+        });
       }
       //Activities Insert
     }
@@ -90,6 +102,16 @@ const checkJoinWithReferBonus = async () => {
           .where("bonus_code", "=", "join_with_refer")
           .where("user_id", "=", i.user_id)
           .execute();
+        dispatchEvent("send_user_activity", {
+          user_id: i.user_id,
+          activity_type: "bonus_earnings",
+          icon: activityConfig.bonus_earnings.icon,
+          title: activityConfig.bonus_earnings.title_status_confirmed,
+          status: "confirmed",
+          url: activityConfig.bonus_earnings.url,
+          amount: Number(32323),
+          data: JSON.stringify({ message: "Referral Code Bonus  Confirmed" }),
+        });
       }
     }
   });
@@ -137,6 +159,16 @@ const checkReferBonus = async () => {
           .where("bonus_code", "=", "refer_bonus")
           .where("user_id", "=", i.user_id)
           .execute();
+        dispatchEvent("send_user_activity", {
+          user_id: i.user_id,
+          activity_type: "bonus_earnings",
+          icon: activityConfig.bonus_earnings.icon,
+          title: activityConfig.bonus_earnings.title_status_confirmed,
+          status: "confirmed",
+          url: activityConfig.bonus_earnings.url,
+          amount: Number(i.amount),
+          data: JSON.stringify({ message: "Referral Bonus Confirmed" }),
+        });
       }
     }
   });

@@ -207,14 +207,16 @@ export interface Translations {
 
 export interface UserActivities {
   activity_type: "bonus_earnings" | "payouts" | "referral_earnings" | "referrals" | "tasks_earnings";
-  activity_user_id: number;
-  amount: number;
+  amount: Generated<number | null>;
   created_at: Generated<Date>;
+  data: Generated<string | null>;
+  icon: string;
   id: Generated<number>;
   status: string;
   title: string;
   updated_at: Generated<Date | null>;
-  url: string;
+  url: Generated<string | null>;
+  user_id: number;
 }
 
 export interface UserBonus {

@@ -12,6 +12,7 @@ import {
 import { dispatchEvent } from "../../events/eventBus";
 import { bonusDetails } from "../bonuses/bonuses.model";
 import { referCodeUser } from "../user/user.model";
+import { activityConfig } from "../../config/activityConfig";
 // import emailEvents from "../../events/emailEvent";
 export const register = async (req: FastifyRequest, reply: FastifyReply) => {
   const { name, email, password, referral } = req.body as registerUserSchema;
@@ -28,12 +29,12 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
       referralCode,
       referral ? referral : null
     );
-    console.log(register.insertId);
     if (register) {
       let accessToken = await createJWTToken(
         { name: name, email: email },
         `${parseInt(config.env.app.expiresIn)}h`
       );
+
       dispatchEvent("user_registered", {
         fromEmail: config.env.app.email,
         toEmail: email,
@@ -54,7 +55,17 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
         expires_on: null,
         referred_bonus_id: null,
       });
-
+      //bonusearning_activity
+      dispatchEvent("send_user_activity", {
+        user_id: register.insertId,
+        activity_type: "bonus_earnings",
+        icon: activityConfig.bonus_earnings.icon,
+        title: activityConfig.bonus_earnings.title_status_assigned,
+        status: "assigned",
+        url: activityConfig.bonus_earnings.url,
+        amount: Number(noReferBonus?.amount),
+        data: JSON.stringify({ message: "Register Bonus" }),
+      });
       if (joinReferBonus?.validity_days) {
         const joinReferExpiresOn = new Date();
         joinReferExpiresOn.setDate(
@@ -75,6 +86,17 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
             expires_on: joinReferExpiresOn.toISOString(),
             referred_bonus_id: isReferal.id,
           });
+          dispatchEvent("send_user_activity", {
+            user_id: register.insertId,
+            activity_type: "bonus_earnings",
+            icon: activityConfig.bonus_earnings.icon,
+            title: activityConfig.bonus_earnings.title_status_assigned,
+            status: "assigned",
+            url: activityConfig.bonus_earnings.url,
+            amount: Number(joinReferBonus?.amount),
+            data: JSON.stringify({ message: "Referral Code Bonus" }),
+          });
+          //bonusearning_activity && referral_activity(isReferal.id)
           //referal Bonus
           if (referBonus?.validity_days) {
             const expiresOn = new Date();
@@ -85,6 +107,32 @@ export const register = async (req: FastifyRequest, reply: FastifyReply) => {
               bonus_code: referBonus?.code,
               expires_on: expiresOn.toISOString(),
               referred_bonus_id: null,
+            });
+            dispatchEvent("send_user_activity", {
+              user_id: isReferal.id,
+              activity_type: "referrals",
+              icon: activityConfig.referrals.icon,
+              title: activityConfig.referrals.title_create,
+              status: "assigned",
+              url: activityConfig.referrals.url,
+              amount: Number(referBonus?.amount),
+              data: JSON.stringify({
+                message: "Referral User Bonus",
+                referred_userId: register.insertId,
+              }),
+            });
+            dispatchEvent("send_user_activity", {
+              user_id: isReferal.id,
+              activity_type: "bonus_earnings",
+              icon: activityConfig.bonus_earnings.icon,
+              title: activityConfig.bonus_earnings.title_status_assigned,
+              status: "assigned",
+              url: activityConfig.bonus_earnings.url,
+              amount: Number(referBonus?.amount),
+              data: JSON.stringify({
+                message: "Referral User Bonus",
+                referred_userId: register.insertId,
+              }),
             });
           }
         }
