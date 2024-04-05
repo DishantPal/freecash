@@ -10,6 +10,9 @@ const checkJoinNoReferBonus = async () => {
     .selectAll()
     .where("code", "=", "join_no_refer")
     .executeTakeFirst();
+
+  if(!bonusDetails) return;
+
   const userBonuses = collect(
     await db
       .selectFrom("user_bonus")
@@ -19,12 +22,9 @@ const checkJoinNoReferBonus = async () => {
       .groupBy("user_id")
       .execute()
   );
-  const userBonusUnique = userBonuses.unique("user_id");
-  userBonusUnique.all();
-  console.log(userBonusUnique);
-  // const userPayments = collect(knex(user_tasks).whereIn(user_id, userIdsFromUserBonuses).where(status, confirmed))
-  //   .groupBy('user_id')
-  //   .sum('amount')
+
+  if(userBonuses.count() <= 0) return;
+
   const userPayments = await db
     .selectFrom("user_offerwall_sales")
     .select([
@@ -35,31 +35,23 @@ const checkJoinNoReferBonus = async () => {
     ])
     .groupBy("user_id")
     .execute();
-  console.log(userPayments);
-  //   // {1: 12, 2: 321, }
-  userBonusUnique.map(async (i) => {
-    if (bonusDetails) {
-      if (Number(i.amount) >= Number(bonusDetails.amount)) {
+  
+    userBonuses
+      .filter(userbonus => Number(userbonus.amount) >= Number(bonusDetails.amount))
+      .map(async (userbonus) => {
+
         await db
           .updateTable("user_bonus")
           .set({ status: "confirmed" })
-          .where("user_id", "=", i.user_id)
+          .where("user_id", "=", userbonus.user_id)
           .execute();
-        dispatchEvent("send_user_activity", {
-          user_id: i.user_id,
-          activity_type: "bonus_earnings",
-          icon: activityConfig.bonus_earnings.icon,
-          title: activityConfig.bonus_earnings.title_status_confirmed,
-          status: "confirmed",
-          url: activityConfig.bonus_earnings.url,
-          amount: Number(32323),
-          data: JSON.stringify({ message: "Register Bonus Confirmed" }),
-        });
-      }
-      //Activities Insert
-    }
+
+        // dispatchEvent<UserBonus>("user_bonus_confired", userbonus same type as UserBonus);
+        dispatchEvent<UserBonus>("user_bonus_confired", userbonus);
   });
 };
+
+
 const checkJoinWithReferBonus = async () => {
   const bonusDetails = await db
     .selectFrom("bonus_types")

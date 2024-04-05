@@ -3,7 +3,7 @@ import { sendEmailEvent } from "./listeners/sendWelcomeEmail";
 import { sendActivitiesNotification } from "./listeners/sendUserActivities";
 
 export const eventListeners: any = {
-  user_registered: [sendEmailEvent],
+  user_registered: [sendEmailEvent, bonusCreated],
   assign_bonus: [assignBonus],
   send_user_activity: [sendActivitiesNotification],
 };
